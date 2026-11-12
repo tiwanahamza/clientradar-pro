@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClientRadar — Local Business & Lead Discovery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Menlo', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Strict Color Lock - Never allow browser default purple visited links */
+    a, a:visited, a:hover, a:active {
+      text-decoration: none;
+    }
+    
+    html, body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-y: auto !important;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    /* Charcoal Dark Mode Standards */
+    .dark body {
+      background-color: #09090b !important;
+      color: #fafafa !important;
+    }
+
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+    .dark .custom-scroll::-webkit-scrollbar-thumb { background: #27272a; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+    .dark .custom-scroll::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+    @keyframes rowFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .lead-row-fade {
+      animation: rowFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Radar sweep animation */
+    @keyframes radarSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-sweep {
+      transform-origin: center;
+      animation: radarSpin 4s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#f8f9fa] dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 antialiased custom-scroll pb-20">
+
+  <!-- Top Live Web Demo / CTA Announcement Bar -->
+  <div class="bg-zinc-950 text-zinc-300 border-b border-emerald-500/30 px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide">Live Web App</span>
+      <span class="text-zinc-300 text-xs hidden sm:inline">Experience ClientRadar live: search businesses, test personalized AI cold outreach, and export verified leads.</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="https://tiwanahamza.gumroad.com/l/pbrqin" target="_blank" rel="noopener" class="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold px-3 py-1 rounded text-xs transition inline-flex items-center gap-1 shadow-sm">
+        <span>Get Full Python Engine ($19)</span> &rarr;
+      </a>
+      <a href="http://www.fiverr.com/s/Q2rGo13" target="_blank" rel="noopener" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold px-3 py-1 rounded text-xs transition border border-zinc-700 inline-flex items-center gap-1">
+        <span>Order Leads ($15)</span> &rarr;
+      </a>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-zinc-200 dark:border-zinc-800/90 bg-white/95 dark:bg-[#0c0c0e]/95 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Name (Bold, High-End & Iconic) -->
+      <div class="flex items-center space-x-3.5">
+        <!-- Prominent Custom Radar Logo -->
+        <div class="relative w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-700/80 flex items-center justify-center shadow-lg shadow-black/40 overflow-hidden shrink-0">
+          <!-- Radar Grid Lines -->
+          <svg class="w-7 h-7 text-emerald-400" viewBox="0 0 32 32" fill="none">
+            <!-- Concentric rings -->
+            <circle cx="16" cy="16" r="13" stroke="#27272a" stroke-width="1.2" stroke-dasharray="2 2"/>
+            <circle cx="16" cy="16" r="9" stroke="#3f3f46" stroke-width="1.2"/>
+            <circle cx="16" cy="16" r="4.5" stroke="#10b981" stroke-width="1.4" stroke-opacity="0.8"/>
+            <circle cx="16" cy="16" r="2" fill="#10b981"/>
+            <!-- Crosshairs -->
+            <line x1="16" y1="3" x2="16" y2="29" stroke="#3f3f46" stroke-width="1"/>
+            <line x1="3" y1="16" x2="29" y2="16" stroke="#3f3f46" stroke-width="1"/>
+            <!-- Rotating Radar Sweep Line -->
+            <g class="radar-sweep">
+              <line x1="16" y1="16" x2="27" y2="7" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 16 L27 7 A14 14 0 0 0 16 2 Z" fill="url(#radarGradient)" opacity="0.35"/>
+            </g>
+            <defs>
+              <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight text-zinc-950 dark:text-white">Client<span class="text-emerald-500 dark:text-emerald-400">Radar</span></span>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 font-mono">B2B Pro</span>
+          </div>
+          <span class="block text-[11px] font-medium text-zinc-500 dark:text-zinc-400">Verified Local Business Discovery & Proposal Engine</span>
+        </div>
+      </div>
+
+      <!-- Right Controls: Export & Theme Toggle -->
+      <div class="flex items-center gap-2">
+        <button onclick="copyAllEmails()" id="btnCopyEmails" class="hidden text-xs bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium cursor-pointer">
+          <i data-lucide="mail" class="w-3.5 h-3.5 text-zinc-400"></i> Copy Emails
+        </button>
+        <button onclick="downloadColdEmailCSV()" id="btnColdCsvTop" class="hidden text-xs bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-semibold cursor-pointer">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i> Outreach CSV
+        </button>
+        <button onclick="downloadCSV()" id="btnCsvTop" class="hidden text-xs bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+        </button>
+
+        <!-- Sender Setup & Active Profile Button -->
+        <button onclick="openSenderModal(false)" id="btnHeaderSender" class="text-xs bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium cursor-pointer" title="Configure your Name and Gmail SMTP Settings">
+          <i data-lucide="mail-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+          <span id="headerSenderLabel">Sender Setup</span>
+          <i data-lucide="settings" class="w-3 h-3 text-zinc-400"></i>
+        </button>
+
+        <!-- Theme Toggle Button (Light / Dark) -->
+        <button onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme" title="Toggle Light / Dark mode" class="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition shadow-sm ml-1 cursor-pointer">
+          <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-5">
+
+    <!-- Search Card (Charcoal #121215 in Dark, Clean White in Light) -->
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-5 shadow-sm space-y-4">
+      
+      <!-- Personalization / Service Target Selector -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-zinc-100 dark:border-zinc-800/80">
+        <div class="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-500"></i>
+          <span class="font-semibold text-zinc-700 dark:text-zinc-300">Target Industry Focus:</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5" id="focusButtonGroup">
+          <button onclick="setIndustryFocus('web')" id="focusBtn-web" class="text-xs px-2.5 py-1 rounded-lg border transition font-medium cursor-pointer bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 border-transparent shadow-sm">
+            🌐 Web Design
+          </button>
+          <button onclick="setIndustryFocus('seo')" id="focusBtn-seo" class="text-xs px-2.5 py-1 rounded-lg border transition font-medium cursor-pointer bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:text-zinc-900 dark:hover:text-white">
+            ⭐ SEO & Reviews
+          </button>
+          <button onclick="setIndustryFocus('ads')" id="focusBtn-ads" class="text-xs px-2.5 py-1 rounded-lg border transition font-medium cursor-pointer bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:text-zinc-900 dark:hover:text-white">
+            🎯 Paid Ads & Leads
+          </button>
+          <button onclick="setIndustryFocus('services')" id="focusBtn-services" class="text-xs px-2.5 py-1 rounded-lg border transition font-medium cursor-pointer bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:text-zinc-900 dark:hover:text-white">
+            ⚡ Home Services
+          </button>
+        </div>
+      </div>
+
+      <!-- Inputs: What & Where -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Category / Niche -->
+        <div>
+          <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">What type of business are you looking for?</label>
+          <div class="relative">
+            <input type="text" id="nicheInput" placeholder="e.g. Roofing, Plumbers, Dentists, Gyms" class="w-full bg-zinc-50 dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white rounded-xl px-3.5 py-2.5 pl-10 text-xs sm:text-sm focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-400 transition font-medium">
+            <i data-lucide="briefcase" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-3"></i>
+          </div>
+          <!-- Dynamic Suggestions based on Focus -->
+          <div class="flex flex-wrap items-center gap-1.5 mt-2" id="dynamicSuggestions">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Location with Auto-Detect -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">Where are they located? (City, Society, or Street)</label>
+            <button onclick="detectUserLocation()" class="text-[11px] text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 transition cursor-pointer font-medium">
+              <i data-lucide="locate" class="w-3 h-3"></i> Auto-Detect City
+            </button>
+          </div>
+          <div class="relative">
+            <input type="text" id="locationInput" placeholder="Detecting your location..." class="w-full bg-zinc-50 dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white rounded-xl px-3.5 py-2.5 pl-10 pr-20 text-xs sm:text-sm focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-400 transition font-medium">
+            <i data-lucide="map-pin" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-3"></i>
+            <span id="detectedCountryBadge" class="absolute right-2.5 top-2.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">Local</span>
+          </div>
+          <!-- Dynamic Pinpoint Location Suggestions -->
+          <div class="flex flex-wrap items-center gap-1.5 mt-2" id="dynamicPinpoints">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Filter & Action Row -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80 items-center">
+        
+        <!-- Target Count Selector -->
+        <div class="md:col-span-3 flex items-center gap-2">
+          <label class="text-xs text-zinc-500 dark:text-zinc-400 font-medium whitespace-nowrap">Volume:</label>
+          <select id="limitSelect" class="bg-zinc-50 dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs rounded-lg px-2.5 py-1.5 font-medium focus:outline-none">
+            <option value="10">10 businesses</option>
+            <option value="20">20 businesses</option>
+            <option value="35">35 businesses</option>
+            <option value="50">50 businesses</option>
+          </select>
+        </div>
+
+        <!-- Filter Checkboxes -->
+        <div class="md:col-span-6 flex flex-wrap items-center gap-4">
+          <label class="flex items-center gap-1.5 cursor-pointer text-xs text-zinc-700 dark:text-zinc-300 select-none">
+            <input type="checkbox" id="checkPhone" class="w-3.5 h-3.5 rounded bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:ring-0">
+            <span>Verified Phone</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-xs text-zinc-700 dark:text-zinc-300 select-none">
+            <input type="checkbox" id="checkWebsite" class="w-3.5 h-3.5 rounded bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:ring-0">
+            <span>Has Website</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-xs text-zinc-800 dark:text-zinc-200 font-medium select-none">
+            <input type="checkbox" id="checkEmail" class="w-3.5 h-3.5 rounded bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white focus:ring-0">
+            <span>Find Emails</span>
+          </label>
+        </div>
+
+        <!-- High-Contrast Action Button (Charcoal / Pure White) -->
+        <div class="md:col-span-3 flex justify-end">
+          <button id="scrapeBtn" onclick="runLiveStreamScrape()" class="w-full md:w-auto px-6 py-2.5 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm cursor-pointer">
+            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+            <span>Search Businesses</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Quiet Live Progress Bar (Appears only while searching) -->
+    <div id="liveStatusContainer" class="hidden bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 shadow-sm space-y-2.5">
+      <div class="flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span id="currentStatusText" class="font-medium text-zinc-800 dark:text-zinc-200">Starting search...</span>
+        </div>
+        <div class="flex items-center gap-2 font-mono text-zinc-500 dark:text-zinc-400 text-xs">
+          <span id="streamCounterText">0 / 10</span>
+          <span>•</span>
+          <span id="streamPercentText">0%</span>
+        </div>
+      </div>
+      <div class="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+        <div id="streamProgressBar" class="bg-zinc-950 dark:bg-white h-full w-0 transition-all duration-300"></div>
+      </div>
+    </div>
+
+    <!-- Main Results Table Card (Charcoal #121215 Theme) -->
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800/90 rounded-2xl shadow-sm overflow-hidden">
+      
+      <!-- Table Header Bar with Live Counters & Search Filter -->
+      <div class="p-3.5 sm:p-4 border-b border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 bg-zinc-50/70 dark:bg-[#151519]">
+        
+        <!-- Left: Title & Compact Stat Badges -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-bold text-zinc-950 dark:text-white uppercase tracking-wider">Discovered Leads</span>
+          <span id="statBadgeTotal" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">0 leads</span>
+          <span id="statBadgePhone" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 hidden">0 phones</span>
+          <span id="statBadgeWeb" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hidden">0 websites</span>
+          <span id="statBadgeEmail" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hidden">0 emails</span>
+        </div>
+
+        <!-- Right: Instant Filter & Quick Export -->
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <div class="relative w-full md:w-60">
+            <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Filter by name, phone, etc..." class="w-full bg-white dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white text-xs rounded-lg px-2.5 py-1.5 pl-8 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-400">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2"></i>
+          </div>
+
+          <button onclick="downloadCSV()" id="btnCsvInline" class="hidden px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs font-semibold rounded-lg border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 transition cursor-pointer">
+            <i data-lucide="download" class="w-3 h-3"></i> CSV
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Scrollable Table View (Max Height + Horizontal Scroll + Sticky Header) -->
+      <div class="overflow-x-auto max-h-[620px] overflow-y-auto custom-scroll">
+        <table class="w-full text-left text-xs text-zinc-700 dark:text-zinc-300" id="leadsTable">
+          <thead class="bg-zinc-50 dark:bg-[#151519] text-zinc-500 dark:text-zinc-400 font-semibold border-b border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-wider sticky top-0 z-10 backdrop-blur-sm">
+            <tr>
+              <th class="px-4 py-3">Business Name</th>
+              <th class="px-4 py-3">Phone</th>
+              <th class="px-4 py-3">Website</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Socials</th>
+              <th class="px-4 py-3">Rating</th>
+              <th class="px-4 py-3">Opportunity</th>
+              <th class="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody" class="divide-y divide-zinc-100 dark:divide-zinc-800/80 font-normal">
+            <tr id="emptyRow">
+              <td colspan="8" class="px-4 py-20 text-center text-zinc-400 dark:text-zinc-500">
+                <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                <div class="text-xs font-medium text-zinc-600 dark:text-zinc-400">No leads discovered yet</div>
+                <div class="text-[11px] text-zinc-400 mt-0.5">Click <span class="font-semibold text-zinc-800 dark:text-zinc-200">Search Businesses</span> above to collect live business contacts.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Optional Collapsible Debug Log (Discreetly at the bottom) -->
+    <div class="pt-2">
+      <button onclick="toggleDebugLogs()" class="text-[11px] text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 flex items-center gap-1 transition cursor-pointer">
+        <i data-lucide="chevron-right" id="debugChevron" class="w-3 h-3 transition-transform"></i>
+        <span>Show engine activity logs (debug)</span>
+      </button>
+      <div id="debugLogsContainer" class="hidden mt-2 bg-[#09090b] text-zinc-300 font-mono text-[11px] p-3 rounded-xl max-h-36 overflow-y-auto custom-scroll border border-zinc-800">
+        <div id="consoleLogs">[Engine standby] Ready.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Instant Proposal & Cold Outreach Modal -->
+  <div id="proposalModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-[#151519]">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <h3 id="propBizName" class="font-bold text-sm sm:text-base text-zinc-900 dark:text-white">Business Name</h3>
+          </div>
+          <p id="propSubtitle" class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Opportunity Angle: Pitch details</p>
+        </div>
+        <button onclick="closeProposalModal()" class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 hover:text-zinc-800 dark:hover:text-white flex items-center justify-center transition cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Format Tabs -->
+      <div class="flex border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-5 bg-zinc-50/50 dark:bg-[#121215] gap-3 text-xs font-semibold">
+        <button onclick="switchPropTab('email')" id="tabBtnEmail" class="py-2.5 border-b-2 border-zinc-900 dark:border-white text-zinc-900 dark:text-white cursor-pointer flex items-center gap-1.5">
+          <i data-lucide="mail" class="w-3.5 h-3.5"></i> Cold Email Pitch
+        </button>
+        <button onclick="switchPropTab('whatsapp')" id="tabBtnWhatsapp" class="py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 cursor-pointer flex items-center gap-1.5">
+          <i data-lucide="message-square" class="w-3.5 h-3.5"></i> WhatsApp / SMS
+        </button>
+        <button onclick="switchPropTab('call')" id="tabBtnCall" class="py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 cursor-pointer flex items-center gap-1.5">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> 30s Cold Call Script
+        </button>
+      </div>
+
+      <!-- Modal Body Textarea -->
+      <div class="p-4 sm:p-5 space-y-3 overflow-y-auto custom-scroll flex-1">
+        <div id="emailSubjectBox" class="space-y-1">
+          <label class="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Subject Line:</label>
+          <div id="propSubject" class="text-xs font-mono bg-zinc-100 dark:bg-[#18181c] p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200">
+            Quick question for {name}
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Outreach Message:</label>
+          <textarea id="propBody" rows="9" class="w-full text-xs font-mono bg-zinc-100 dark:bg-[#18181c] p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none leading-relaxed"></textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-2.5 bg-zinc-50 dark:bg-[#151519]">
+        <div class="flex items-center gap-2">
+          <button onclick="openInGmailWeb()" id="btnOpenGmail" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-sm cursor-pointer" title="Open Gmail web with recipient & pitch pre-filled (No setup needed)">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Open in Gmail</span>
+          </button>
+          <div class="flex items-center">
+            <button onclick="handleDirectSend(this)" id="btnSendDirect" class="px-3.5 py-2 rounded-l-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs flex items-center gap-1.5 transition active:scale-95 border-y border-l border-zinc-700 cursor-pointer" title="Send cold email directly via your Gmail SMTP">
+              <i data-lucide="send" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span id="lblSendDirect">Send Direct (Gmail)</span>
+            </button>
+            <button onclick="openSenderModal(false)" class="p-2 rounded-r-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition border border-zinc-700 cursor-pointer" title="Sender Name & Gmail SMTP Settings">
+              <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="copyCurrentProposal(this)" class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-sm cursor-pointer">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copy Text</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sender Profile & Gmail SMTP Configuration Modal -->
+  <div id="senderConfigModal" class="fixed inset-0 z-60 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-[#151519]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <i data-lucide="mail-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">Sender & Gmail SMTP Setup</h3>
+            <p class="text-[11px] text-zinc-500">Configure your Name & Gmail once for 1-click cold outreach</p>
+          </div>
+        </div>
+        <button onclick="closeSenderModal()" class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-white flex items-center justify-center transition cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-4 max-h-[75vh] overflow-y-auto custom-scroll">
+        
+        <!-- Welcome / Explainer Banner -->
+        <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed space-y-1">
+          <div class="font-bold flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            <span>Professional Direct Outreach (Real Gmail / Workspace)</span>
+          </div>
+          <p class="text-[11px] opacity-90">Emails send directly from your authentic Gmail address with full SPF/DKIM verification. 500 emails/day free from Google.</p>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Your Full Name <span class="text-red-500">*</span></label>
+            <input type="text" id="inputSenderName" placeholder="e.g. Hamza Tiwana" class="w-full text-xs bg-zinc-50 dark:bg-[#18181c] p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 font-medium">
+            <p class="text-[10px] text-zinc-500">Signs off all cold emails automatically.</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Agency / Business (Optional)</label>
+            <input type="text" id="inputSenderAgency" placeholder="e.g. Tiwana Growth Agency" class="w-full text-xs bg-zinc-50 dark:bg-[#18181c] p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 font-medium">
+            <p class="text-[10px] text-zinc-500">Appears in proposal signature below your name.</p>
+          </div>
+        </div>
+
+        <!-- Gmail Credentials -->
+        <div class="space-y-3 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Your Gmail Address <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="email" id="inputSenderEmail" placeholder="yourname@gmail.com" class="w-full text-xs font-mono bg-zinc-50 dark:bg-[#18181c] p-2.5 pl-9 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-zinc-400">
+              <i data-lucide="mail" class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5"></i>
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Google App Password (16 Letters) <span class="text-red-500">*</span></label>
+              <a href="https://myaccount.google.com/apppasswords" target="_blank" class="text-[10px] text-blue-500 hover:underline flex items-center gap-0.5 font-medium">
+                <span>Generate App Password</span>
+                <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+              </a>
+            </div>
+            <div class="relative">
+              <input type="password" id="inputSenderPass" placeholder="xxxx xxxx xxxx xxxx" class="w-full text-xs font-mono bg-zinc-50 dark:bg-[#18181c] p-2.5 pl-9 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 tracking-wider">
+              <i data-lucide="key-round" class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5"></i>
+            </div>
+            <p class="text-[10px] text-zinc-500">Go to <span class="text-zinc-700 dark:text-zinc-300 font-mono">myaccount.google.com/apppasswords</span>, enter "ClientRadar", and copy the 16 letters.</p>
+          </div>
+
+          <!-- Advanced Custom SMTP -->
+          <details class="text-xs pt-1">
+            <summary class="text-[11px] text-zinc-500 cursor-pointer hover:text-zinc-800 dark:hover:text-zinc-300 font-medium">Custom Host & Port (Default: smtp.gmail.com:587)</summary>
+            <div class="grid grid-cols-2 gap-2 mt-2 p-2.5 rounded-xl bg-zinc-50 dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800">
+              <div>
+                <label class="text-[10px] text-zinc-500 block">Host:</label>
+                <input type="text" id="inputSenderHost" value="smtp.gmail.com" class="w-full text-xs font-mono bg-white dark:bg-zinc-900 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200">
+              </div>
+              <div>
+                <label class="text-[10px] text-zinc-500 block">Port:</label>
+                <input type="number" id="inputSenderPort" value="587" class="w-full text-xs font-mono bg-white dark:bg-zinc-900 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200">
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-[#151519]">
+        <span class="text-[10px] text-zinc-500">🔒 Saved in your browser. Won't ask on reload.</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="saveSenderConfig()" class="px-5 py-2.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition active:scale-95 cursor-pointer shadow-sm flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Save & Continue</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    lucide.createIcons();
+    let allLeads = [];
+    let activeEventSource = null;
+    let selectedLead = null;
+    let currentPropTab = 'email';
+    let currentFocus = 'web';
+    let detectedLocationData = null;
+
+    // Industry Niche Categories Dictionary
+    const FOCUS_CONFIG = {
+      web: {
+        label: '🌐 Web Design',
+        suggestions: ['Roofing Contractors', 'Plumbing Services', 'Electricians', 'Dental Clinics', 'HVAC Repair'],
+        defaultNiche: 'Roofing Contractors'
+      },
+      seo: {
+        label: '⭐ SEO & Reviews',
+        suggestions: ['Auto Repair Shops', 'Dental Clinics', 'Restaurants', 'Chiropractors', 'Hair Salons'],
+        defaultNiche: 'Auto Repair Shops'
+      },
+      ads: {
+        label: '🎯 Paid Ads & Leads',
+        suggestions: ['Real Estate Agencies', 'Fitness Gyms', 'Solar Installers', 'Cosmetic Surgeons', 'Law Firms'],
+        defaultNiche: 'Real Estate Agencies'
+      },
+      services: {
+        label: '⚡ Home Services',
+        suggestions: ['House Cleaning', 'Landscaping', 'Pest Control', 'Painters', 'Carpet Cleaning'],
+        defaultNiche: 'House Cleaning'
+      }
+    };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Bulletproof Theme Management (Light / Dark)
+    function updateThemeUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const btn = document.getElementById('themeBtn');
+      if (btn) {
+        btn.innerHTML = isDark 
+          ? `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`
+          : `<svg class="w-4 h-4 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+      }
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('clientradar_theme');
+      if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+      }
+      updateThemeUI();
+    }
+
+    function toggleTheme() {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      if (isCurrentlyDark) {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+        localStorage.setItem('clientradar_theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+        localStorage.setItem('clientradar_theme', 'dark');
+      }
+      updateThemeUI();
+      lucide.createIcons();
+    }
+
+    initTheme();
+
+    /* -------------------------------------------------------------
+       SMART PERSONALIZATION & INDUSTRY FOCUS
+    ------------------------------------------------------------- */
+    function setIndustryFocus(focusKey) {
+      currentFocus = focusKey;
+      localStorage.setItem('clientradar_agency_focus', focusKey);
+
+      // Update pill buttons visual state
+      const keys = ['web', 'seo', 'ads', 'services'];
+      keys.forEach(k => {
+        const btn = document.getElementById(`focusBtn-${k}`);
+        if (!btn) return;
+        if (k === focusKey) {
+          btn.className = 'text-xs px-2.5 py-1 rounded-lg border transition font-semibold cursor-pointer bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-transparent shadow-sm';
+        } else {
+          btn.className = 'text-xs px-2.5 py-1 rounded-lg border transition font-medium cursor-pointer bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:text-zinc-900 dark:hover:text-white';
+        }
+      });
+
+      // Render updated suggestion chips
+      renderSuggestions();
+    }
+
+    function renderSuggestions() {
+      const container = document.getElementById('dynamicSuggestions');
+      const config = FOCUS_CONFIG[currentFocus] || FOCUS_CONFIG['web'];
+      
+      let html = `<span class="text-[11px] text-zinc-400 mr-1">Hot Targets:</span>`;
+      config.suggestions.forEach(s => {
+        html += `<button onclick="setNiche('${escapeHtml(s)}')" class="text-xs bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60 px-2.5 py-0.5 rounded-md transition cursor-pointer">${escapeHtml(s)}</button>`;
+      });
+      container.innerHTML = html;
+
+      // Update placeholder
+      document.getElementById('nicheInput').placeholder = `e.g. ${config.suggestions.slice(0, 3).join(', ')}`;
+    }
+
+    function setNiche(n) { 
+      document.getElementById('nicheInput').value = n; 
+      localStorage.setItem('clientradar_last_niche', n);
+    }
+    
+    function setLocation(l) { 
+      document.getElementById('locationInput').value = l; 
+      localStorage.setItem('clientradar_last_location', l);
+    }
+
+    /* -------------------------------------------------------------
+       SMART LOCATION AUTO-DETECTION & PINPOINT SHORTCUTS
+    ------------------------------------------------------------- */
+    async function initLocation() {
+      const savedLoc = localStorage.getItem('clientradar_last_location');
+      const savedNiche = localStorage.getItem('clientradar_last_niche');
+      const savedFocus = localStorage.getItem('clientradar_agency_focus');
+
+      if (savedFocus && FOCUS_CONFIG[savedFocus]) {
+        setIndustryFocus(savedFocus);
+      } else {
+        setIndustryFocus('web');
+      }
+
+      if (savedNiche) {
+        document.getElementById('nicheInput').value = savedNiche;
+      }
+
+      if (savedLoc) {
+        document.getElementById('locationInput').value = savedLoc;
+        renderPinpointsForLocation(savedLoc);
+      } else {
+        // Fast auto-detection on first visit
+        await detectUserLocation();
+      }
+    }
+
+    async function detectUserLocation() {
+      const locInput = document.getElementById('locationInput');
+      locInput.placeholder = "Detecting your city...";
+
+      try {
+        // Lightweight IP-based geolocation (fast, non-intrusive)
+        const resp = await fetch('https://ipwho.is/?fields=city,region,country,country_code', { signal: AbortSignal.timeout(3000) });
+        const data = await resp.json();
+
+        if (data && data.city) {
+          detectedLocationData = data;
+          const detectedString = `${data.city}, ${data.country}`;
+          locInput.value = detectedString;
+          localStorage.setItem('clientradar_last_location', detectedString);
+
+          const badge = document.getElementById('detectedCountryBadge');
+          if (badge) badge.innerText = data.country_code || 'Local';
+
+          renderPinpointsForLocation(detectedString, data);
+        } else {
+          fallbackLocation();
+        }
+      } catch (e) {
+        fallbackLocation();
+      }
+    }
+
+    function fallbackLocation() {
+      const locInput = document.getElementById('locationInput');
+      if (!locInput.value) {
+        locInput.value = "Islamabad, Pakistan";
+        renderPinpointsForLocation("Islamabad, Pakistan");
+      }
+    }
+
+    function renderPinpointsForLocation(locString, geoData) {
+      const container = document.getElementById('dynamicPinpoints');
+      const lower = locString.toLowerCase();
+      let spots = [];
+
+      if (lower.includes('islamabad') || lower.includes('rawalpindi') || (geoData && geoData.country_code === 'PK')) {
+        spots = [
+          { label: 'Airport Society, ISB', query: 'Airport Housing Society, Islamabad' },
+          { label: 'F-10 Markaz, ISB', query: 'F-10 Markaz, Islamabad' },
+          { label: 'Blue Area, ISB', query: 'Blue Area, Islamabad' },
+          { label: 'Bahria Town, RWP', query: 'Bahria Town, Rawalpindi' },
+          { label: 'Gulberg, LHR', query: 'Main Boulevard Gulberg, Lahore' }
+        ];
+      } else if (lower.includes('london') || (geoData && geoData.country_code === 'GB')) {
+        spots = [
+          { label: 'Oxford St, London', query: 'Oxford Street, London' },
+          { label: 'Canary Wharf', query: 'Canary Wharf, London' },
+          { label: 'Soho, London', query: 'Soho, London' },
+          { label: 'Camden, London', query: 'Camden, London' }
+        ];
+      } else {
+        // US / General Global Hotspots
+        spots = [
+          { label: 'Brickell, Miami', query: 'Brickell, Miami, FL' },
+          { label: 'Downtown Dallas', query: 'Downtown Dallas, TX' },
+          { label: 'Austin Downtown', query: 'Downtown Austin, TX' },
+          { label: 'Manhattan, NY', query: 'Manhattan, New York, NY' }
+        ];
+      }
+
+      let html = `<span class="text-[11px] text-zinc-400 mr-1">Pinpoint:</span>`;
+      spots.forEach(sp => {
+        html += `<button onclick="setLocation('${escapeHtml(sp.query)}')" class="text-xs bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60 px-2.5 py-0.5 rounded-md transition cursor-pointer">${escapeHtml(sp.label)}</button>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // Launch location init immediately
+    initLocation();
+
+    function toggleDebugLogs() {
+      const c = document.getElementById('debugLogsContainer');
+      const chevron = document.getElementById('debugChevron');
+      const isHidden = c.classList.toggle('hidden');
+      chevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
+    }
+
+    function logToConsole(text) {
+      const consoleEl = document.getElementById('consoleLogs');
+      const timeStr = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.innerText = `[${timeStr}] ${text}`;
+      consoleEl.appendChild(div);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function runLiveStreamScrape() {
+      const niche = document.getElementById('nicheInput').value.trim();
+      const location = document.getElementById('locationInput').value.trim();
+
+      if (!niche || !location) {
+        alert('Please specify both a business category and a location.');
+        return;
+      }
+
+      // Save for user convenience
+      localStorage.setItem('clientradar_last_niche', niche);
+      localStorage.setItem('clientradar_last_location', location);
+
+      const limit = parseInt(document.getElementById('limitSelect').value);
+      const reqPhone = document.getElementById('checkPhone').checked;
+      const reqWeb = document.getElementById('checkWebsite').checked;
+      const reqEmail = document.getElementById('checkEmail').checked;
+
+      const btn = document.getElementById('scrapeBtn');
+      const statusContainer = document.getElementById('liveStatusContainer');
+      const progressBar = document.getElementById('streamProgressBar');
+      const counterText = document.getElementById('streamCounterText');
+      const percentText = document.getElementById('streamPercentText');
+
+      allLeads = [];
+      document.getElementById('leadsBody').innerHTML = '';
+      statusContainer.classList.remove('hidden');
+      progressBar.style.width = '5%';
+      percentText.innerText = '5%';
+      counterText.innerText = `0 / ${limit}`;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-1.5"><i data-lucide="loader-2" class="w-3.5 h-3.5"></i></span> Searching...`;
+      lucide.createIcons();
+
+      document.getElementById('currentStatusText').innerText = `Searching Google Maps for '${niche}' in '${location}'...`;
+      logToConsole(`Initiating search: '${niche}' in '${location}'`);
+
+      if (activeEventSource) {
+        activeEventSource.close();
+      }
+
+      const params = new URLSearchParams({
+        niche: niche,
+        location: location,
+        max_results: limit,
+        require_phone: reqPhone,
+        require_website: reqWeb,
+        require_email: reqEmail
+      });
+
+      activeEventSource = new EventSource(`/api/scrape/stream?${params.toString()}`);
+
+      activeEventSource.onmessage = function(e) {
+        try {
+          const event = JSON.parse(e.data);
+
+          if (event.type === 'step') {
+            document.getElementById('currentStatusText').innerText = event.text;
+            logToConsole(`[Step ${event.step}] ${event.text}`);
+          } else if (event.type === 'log') {
+            logToConsole(event.text);
+            document.getElementById('currentStatusText').innerText = event.text;
+          } else if (event.type === 'lead') {
+            const lead = event.lead;
+            allLeads.push(lead);
+
+            appendLeadToTable(lead);
+            updateBadges(allLeads);
+
+            const prog = event.progress || Math.round((allLeads.length / limit) * 100);
+            progressBar.style.width = `${prog}%`;
+            percentText.innerText = `${prog}%`;
+            counterText.innerText = `${allLeads.length} / ${limit}`;
+
+            if (event.log) logToConsole(event.log);
+            document.getElementById('currentStatusText').innerText = `Added lead: ${lead.name}`;
+
+            // Reveal action buttons
+            document.getElementById('btnCsvTop').classList.remove('hidden');
+            document.getElementById('btnCsvInline').classList.remove('hidden');
+            document.getElementById('btnColdCsvTop').classList.remove('hidden');
+            document.getElementById('btnCopyEmails').classList.remove('hidden');
+          } else if (event.type === 'done') {
+            activeEventSource.close();
+            activeEventSource = null;
+
+            document.getElementById('currentStatusText').innerText = event.text;
+            progressBar.style.width = '100%';
+            percentText.innerText = '100%';
+            counterText.innerText = `${allLeads.length} / ${limit}`;
+            logToConsole('Done: ' + event.text);
+
+            setTimeout(() => {
+              statusContainer.classList.add('hidden');
+            }, 3500);
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="search" class="w-3.5 h-3.5"></i><span>Search Businesses</span>`;
+            lucide.createIcons();
+          } else if (event.type === 'error') {
+            activeEventSource.close();
+            activeEventSource = null;
+            logToConsole('⚠️ Notice: ' + event.text);
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="search" class="w-3.5 h-3.5"></i><span>Search Businesses</span>`;
+            lucide.createIcons();
+          }
+        } catch (err) {
+          console.error('Stream parse error', err);
+        }
+      };
+
+      activeEventSource.onerror = function() {
+        if (activeEventSource) {
+          activeEventSource.close();
+          activeEventSource = null;
+        }
+        if (allLeads.length === 0) {
+          logToConsole('⚡ Local API offline — Switching to Live Cloud Preview Engine...');
+          runCloudPreviewSimulation(niche, location, limit, reqPhone, reqWeb, reqEmail, btn, progressBar, percentText, counterText, statusContainer);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="search" class="w-3.5 h-3.5"></i><span>Search Businesses</span>`;
+          lucide.createIcons();
+        }
+      };
+    }
+
+    function appendLeadToTable(l) {
+      const tbody = document.getElementById('leadsBody');
+      const emptyRow = document.getElementById('emptyRow');
+      if (emptyRow) emptyRow.remove();
+
+      const leadIdx = allLeads.length - 1;
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40 transition lead-row-fade';
+      tr.innerHTML = `
+        <!-- Business Name -->
+        <td class="px-4 py-3">
+          <div class="font-semibold text-zinc-900 dark:text-white">${escapeHtml(l.name)}</div>
+          <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(l.category)}</div>
+        </td>
+
+        <!-- Phone -->
+        <td class="px-4 py-3 whitespace-nowrap">
+          ${l.phone !== 'N/A' 
+            ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
+                 <a href="tel:${l.phone}" class="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold">${escapeHtml(l.phone)}</a>
+                 <button onclick="copyToClipboard('${escapeHtml(l.phone)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer" title="Copy"><i data-lucide="copy" class="w-2.5 h-2.5"></i></button>
+               </div>` 
+            : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">N/A</span>`
+          }
+        </td>
+
+        <!-- Website -->
+        <td class="px-4 py-3 text-xs whitespace-nowrap">
+          ${l.website !== 'N/A' 
+            ? `<a href="${l.website}" target="_blank" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:underline flex items-center gap-1 truncate max-w-[130px]">
+                 ${escapeHtml(formatDomain(l.website))} <i data-lucide="external-link" class="w-2.5 h-2.5 opacity-60"></i>
+               </a>` 
+            : `<span class="text-amber-600 dark:text-amber-400 text-[11px] font-medium">None</span>`
+          }
+        </td>
+
+        <!-- Email -->
+        <td class="px-4 py-3 text-xs whitespace-nowrap">
+          ${l.email !== 'N/A' 
+            ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
+                 <a href="mailto:${l.email}" class="text-zinc-800 dark:text-zinc-200 hover:underline truncate max-w-[150px] font-medium">${escapeHtml(l.email)}</a>
+                 <button onclick="copyToClipboard('${escapeHtml(l.email)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer" title="Copy"><i data-lucide="copy" class="w-2.5 h-2.5"></i></button>
+               </div>` 
+            : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">—</span>`
+          }
+        </td>
+
+        <!-- Socials -->
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-1.5">
+            ${l.socials && l.socials.instagram ? `<a href="${l.socials.instagram}" target="_blank" class="p-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-pink-600 dark:text-pink-400" title="Instagram"><i data-lucide="instagram" class="w-3.5 h-3.5"></i></a>` : ''}
+            ${l.socials && l.socials.facebook ? `<a href="${l.socials.facebook}" target="_blank" class="p-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-blue-600 dark:text-blue-400" title="Facebook"><i data-lucide="facebook" class="w-3.5 h-3.5"></i></a>` : ''}
+            ${l.socials && l.socials.linkedin ? `<a href="${l.socials.linkedin}" target="_blank" class="p-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sky-600 dark:text-sky-400" title="LinkedIn"><i data-lucide="linkedin" class="w-3.5 h-3.5"></i></a>` : ''}
+            ${(!l.socials || Object.keys(l.socials).length === 0) ? `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">—</span>` : ''}
+          </div>
+        </td>
+
+        <!-- Rating -->
+        <td class="px-4 py-3 whitespace-nowrap text-zinc-700 dark:text-zinc-300">
+          <span class="text-amber-500 font-semibold">★ ${l.rating || 'N/A'}</span>
+          <span class="text-[10px] text-zinc-400 ml-0.5">(${l.reviews_count || 0})</span>
+        </td>
+
+        <!-- Opportunity Badge -->
+        <td class="px-4 py-3">
+          <span class="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded ${getBadgeClass(l.opportunity_color)}" title="${escapeHtml(l.pitch_angle || '')}">
+            ${escapeHtml(l.opportunity_tag)}
+          </span>
+        </td>
+
+        <!-- Actions: Proposal Pitch & Map -->
+        <td class="px-4 py-3 text-right whitespace-nowrap">
+          <div class="inline-flex items-center gap-1.5">
+            <button onclick="openProposalModal(${leadIdx})" class="text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="Generate Proposal & Pitch">
+              <i data-lucide="sparkles" class="w-3 h-3 text-emerald-500"></i> Pitch
+            </button>
+            <a href="${l.maps_url}" target="_blank" class="text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer">
+              Map <i data-lucide="arrow-up-right" class="w-2.5 h-2.5"></i>
+            </a>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      lucide.createIcons();
+    }
+
+    function getBadgeClass(color) {
+      switch(color) {
+        case 'rose': return 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60';
+        case 'amber': return 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60';
+        case 'sky': return 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60';
+        case 'emerald': return 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60';
+        default: return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700';
+      }
+    }
+
+    function updateBadges(leads) {
+      if (leads.length === 0) return;
+      document.getElementById('statBadgeTotal').innerText = `${leads.length} leads`;
+
+      const withPhone = leads.filter(l => l.phone && l.phone !== 'N/A').length;
+      const bPhone = document.getElementById('statBadgePhone');
+      bPhone.innerText = `${withPhone} phones`;
+      bPhone.classList.remove('hidden');
+
+      const withWeb = leads.filter(l => l.website && l.website !== 'N/A').length;
+      const bWeb = document.getElementById('statBadgeWeb');
+      bWeb.innerText = `${withWeb} websites`;
+      bWeb.classList.remove('hidden');
+
+      const withEmail = leads.filter(l => l.email && l.email !== 'N/A').length;
+      const bEmail = document.getElementById('statBadgeEmail');
+      bEmail.innerText = `${withEmail} emails`;
+      bEmail.classList.remove('hidden');
+    }
+
+    function filterTable() {
+      const q = document.getElementById('filterInput').value.toLowerCase();
+      const filtered = allLeads.filter(l =>
+        l.name.toLowerCase().includes(q) ||
+        (l.address && l.address.toLowerCase().includes(q)) ||
+        l.phone.toLowerCase().includes(q) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
+        l.opportunity_tag.toLowerCase().includes(q)
+      );
+      renderTableFull(filtered);
+    }
+
+    function renderTableFull(leads) {
+      const tbody = document.getElementById('leadsBody');
+      tbody.innerHTML = '';
+      if (leads.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-8 text-center text-zinc-400">No matching records found.</td></tr>`;
+        return;
+      }
+      leads.forEach(l => appendLeadToTable(l));
+    }
+
+    /* -------------------------------------------------------------
+       PROPOSAL & PITCH GENERATOR LOGIC
+    ------------------------------------------------------------- */
+    function openProposalModal(leadIdx) {
+      selectedLead = allLeads[leadIdx];
+      if (!selectedLead) return;
+
+      document.getElementById('propBizName').innerText = selectedLead.name;
+      document.getElementById('propSubtitle').innerText = `${selectedLead.category} in ${selectedLead.city_state} • ${selectedLead.opportunity_tag}`;
+
+      currentPropTab = 'email';
+      renderProposalContent();
+
+      document.getElementById('proposalModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProposalModal() {
+      document.getElementById('proposalModal').classList.add('hidden');
+    }
+
+    function switchPropTab(tab) {
+      currentPropTab = tab;
+      
+      const tabEmail = document.getElementById('tabBtnEmail');
+      const tabWa = document.getElementById('tabBtnWhatsapp');
+      const tabCall = document.getElementById('tabBtnCall');
+
+      const activeCls = 'py-2.5 border-b-2 border-zinc-950 dark:border-white text-zinc-950 dark:text-white cursor-pointer flex items-center gap-1.5 font-bold';
+      const inactiveCls = 'py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 cursor-pointer flex items-center gap-1.5';
+
+      tabEmail.className = tab === 'email' ? activeCls : inactiveCls;
+      tabWa.className = tab === 'whatsapp' ? activeCls : inactiveCls;
+      tabCall.className = tab === 'call' ? activeCls : inactiveCls;
+
+      renderProposalContent();
+    }
+
+    function renderProposalContent() {
+      if (!selectedLead) return;
+
+      const l = selectedLead;
+      const subjectBox = document.getElementById('emailSubjectBox');
+      const subjEl = document.getElementById('propSubject');
+      const bodyEl = document.getElementById('propBody');
+
+      const senderName = localStorage.getItem('clientradar_user_name') || '[Your Name]';
+      const senderAgency = localStorage.getItem('clientradar_agency_name') || '';
+      const signature = senderAgency ? `${senderName}\n${senderAgency}` : senderName;
+
+      let subject = "";
+      let body = "";
+
+      if (currentPropTab === 'email') {
+        subjectBox.classList.remove('hidden');
+
+        if (l.opportunity_tag === 'Needs Website') {
+          subject = `Quick question regarding ${l.name}`;
+          body = `Hi ${l.name} Team,
+
+I was searching for ${l.category.toLowerCase()} in ${l.city_state} and noticed you don't have an official website or online booking page listed on Google Maps.
+
+Right now, potential customers searching on Google Maps are clicking on competitors with active websites and booking systems.
+
+I built a quick modern website demo designed specifically for ${l.name} with instant appointment scheduling and mobile support.
+
+Would you be open to a 2-minute preview this week?
+
+Best regards,
+${signature}`;
+        } else if (l.opportunity_tag === 'Reputation Alert') {
+          subject = `Google rating insight for ${l.name}`;
+          body = `Hi ${l.name} Team,
+
+I came across your Google profile in ${l.city_state} and noticed your rating is currently at ${l.rating} stars.
+
+In local searches, businesses with ratings under 4.3 lose up to 40% of prospective clients before they even pick up the phone.
+
+We run an automated 5-star review recovery system that filters negative feedback internally while boosting happy customer reviews onto Google.
+
+Would you be open to seeing how we could get ${l.name} back to 4.8+ stars in the next 30 days?
+
+Best regards,
+${signature}`;
+        } else if (l.opportunity_tag === 'SEO / Review Deficit') {
+          subject = `Google Maps ranking opportunity for ${l.name}`;
+          body = `Hi ${l.name} Team,
+
+You have great ratings on Google Maps (${l.rating} stars), but with only ${l.reviews_count} total reviews, competitors with 40+ reviews are appearing ahead of you in search results for ${l.category.toLowerCase()} in ${l.city_state}.
+
+We run an automated SMS review accelerator that helps local businesses collect 15-20 verified 5-star Google reviews per month on autopilot.
+
+Can I send you a 1-page overview of how it works for ${l.category.toLowerCase()}?
+
+Best regards,
+${signature}`;
+        } else {
+          subject = `Growth opportunity for ${l.name} in ${l.city_state}`;
+          body = `Hi ${l.name} Team,
+
+I've been following local ${l.category.toLowerCase()} in ${l.city_state} and noticed ${l.name} already has a strong reputation (${l.rating} stars).
+
+We help established local businesses scale customer acquisition with targeted local ads and automated booking funnels.
+
+Would you be open to seeing how we helped similar businesses add 25-30 qualified bookings every month?
+
+Best regards,
+${signature}`;
+        }
+
+        subjEl.innerText = subject;
+        bodyEl.value = body;
+
+      } else if (currentPropTab === 'whatsapp') {
+        subjectBox.classList.add('hidden');
+
+        if (l.opportunity_tag === 'Needs Website') {
+          body = `Hi team at ${l.name}! 👋 Noticed you don't have a website or online booking link on your Google Maps profile. You're likely losing local clients in ${l.city_state} to competitors nearby. I put together a quick demo of how your site could look. Can I send you the link?`;
+        } else if (l.opportunity_tag === 'Reputation Alert') {
+          body = `Hello ${l.name}! 👋 Quick note: your Google rating is currently at ${l.rating}★. We help local businesses recover their score to 4.8+ with automated review booster campaigns. Open to a 2-min breakdown of how it works?`;
+        } else {
+          body = `Hi ${l.name}! 👋 Great rating on Google Maps (${l.rating}★), but with ${l.reviews_count} reviews you can easily rank #1 in ${l.city_state} with a quick review boost. Happy to share a free audit if you're interested!`;
+        }
+        bodyEl.value = body;
+
+      } else if (currentPropTab === 'call') {
+        subjectBox.classList.add('hidden');
+
+        const painPoint = (l.opportunity_tag === 'Needs Website')
+          ? "Your Google profile does not have an active website or booking link, so when people search on their phones, they are booking with competitors down the street."
+          : "Your Google listing has great potential, but competitors with more reviews are outranking you in local search.";
+
+        body = `[30-SECOND COLD CALL SCRIPT]
+
+You: "Hi, good morning! Is this the manager or owner of ${l.name}?"
+
+[Wait for response]
+
+You: "Great! My name is ${senderName}. I was looking at ${l.category.toLowerCase()} in ${l.city_state} on Google Maps and noticed something that's likely costing you several new clients every week..."
+
+[PAUSE - Let them ask 'What is that?']
+
+You: "${painPoint} I actually put together a free 2-minute audit for ${l.name}. Can I email or WhatsApp it over to you today?"`;
+        bodyEl.value = body;
+      }
+    }
+
+    function copyCurrentProposal(btn) {
+      const bodyText = document.getElementById('propBody').value;
+      const subjBox = document.getElementById('emailSubjectBox');
+      
+      let fullText = bodyText;
+      if (currentPropTab === 'email' && !subjBox.classList.contains('hidden')) {
+        const subjText = document.getElementById('propSubject').innerText;
+        fullText = `Subject: ${subjText}\n\n${bodyText}`;
+      }
+
+      navigator.clipboard.writeText(fullText);
+
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Copied to Clipboard!</span>`;
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        lucide.createIcons();
+      }, 1500);
+    }
+
+    function openInGmailWeb() {
+      if (!selectedLead) return;
+      const to = (selectedLead.email && selectedLead.email !== 'N/A') ? selectedLead.email : '';
+      const subj = document.getElementById('propSubject').innerText.trim();
+      const body = document.getElementById('propBody').value.trim();
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+      window.open(gmailUrl, '_blank');
+    }
+
+    function openSenderModal(isOnboarding = false) {
+      const modal = document.getElementById('senderConfigModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      document.getElementById('inputSenderName').value = localStorage.getItem('clientradar_user_name') || '';
+      document.getElementById('inputSenderAgency').value = localStorage.getItem('clientradar_agency_name') || '';
+      document.getElementById('inputSenderEmail').value = localStorage.getItem('clientradar_smtp_email') || '';
+      document.getElementById('inputSenderPass').value = localStorage.getItem('clientradar_smtp_pass') || '';
+      document.getElementById('inputSenderHost').value = localStorage.getItem('clientradar_smtp_host') || 'smtp.gmail.com';
+      document.getElementById('inputSenderPort').value = localStorage.getItem('clientradar_smtp_port') || '587';
+      lucide.createIcons();
+    }
+
+    function closeSenderModal() {
+      const modal = document.getElementById('senderConfigModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveSenderConfig() {
+      const name = document.getElementById('inputSenderName').value.trim();
+      const agency = document.getElementById('inputSenderAgency').value.trim();
+      const email = document.getElementById('inputSenderEmail').value.trim();
+      const pass = document.getElementById('inputSenderPass').value.trim();
+      const host = document.getElementById('inputSenderHost').value.trim() || 'smtp.gmail.com';
+      const port = document.getElementById('inputSenderPort').value.trim() || '587';
+
+      if (!name) {
+        alert('Please enter your full name for proposal signatures.');
+        return;
+      }
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid Gmail address.');
+        return;
+      }
+      if (!pass) {
+        alert('Please enter your Google App Password (16 characters from myaccount.google.com/apppasswords).');
+        return;
+      }
+
+      localStorage.setItem('clientradar_configured', 'true');
+      localStorage.setItem('clientradar_user_name', name);
+      localStorage.setItem('clientradar_agency_name', agency);
+      localStorage.setItem('clientradar_smtp_email', email);
+      localStorage.setItem('clientradar_smtp_pass', pass);
+      localStorage.setItem('clientradar_smtp_host', host);
+      localStorage.setItem('clientradar_smtp_port', port);
+
+      closeSenderModal();
+      updateHeaderSenderBadge();
+      alert('✅ Settings saved! You are now set up for 1-click cold email outreach.');
+    }
+
+    function updateHeaderSenderBadge() {
+      const badge = document.getElementById('headerSenderLabel');
+      if (!badge) return;
+      const name = localStorage.getItem('clientradar_user_name');
+      const email = localStorage.getItem('clientradar_smtp_email');
+      if (name && email) {
+        badge.innerText = `${name} (${email.split('@')[0]})`;
+      } else if (name) {
+        badge.innerText = name;
+      } else {
+        badge.innerText = 'Sender Setup';
+      }
+    }
+
+    async function handleDirectSend(btn) {
+      if (!selectedLead || !selectedLead.email || selectedLead.email === 'N/A') {
+        alert('This business does not have a verified email address.');
+        return;
+      }
+
+      const senderEmail = localStorage.getItem('clientradar_smtp_email');
+      const senderPass = localStorage.getItem('clientradar_smtp_pass');
+
+      if (!senderEmail || !senderPass) {
+        alert('Please configure your Gmail address and Google App Password first.');
+        openSenderModal(true);
+        return;
+      }
+
+      const subj = document.getElementById('propSubject').innerText.trim();
+      const body = document.getElementById('propBody').value.trim();
+
+      const origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-1"><i data-lucide="loader-2" class="w-3.5 h-3.5"></i></span> Dispatching via Gmail...`;
+      lucide.createIcons();
+
+      try {
+        const resp = await fetch('/api/email/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipient: selectedLead.email,
+            subject: subj,
+            body: body,
+            provider: 'smtp',
+            sender_email: senderEmail,
+            sender_password: senderPass,
+            smtp_host: localStorage.getItem('clientradar_smtp_host') || 'smtp.gmail.com',
+            smtp_port: parseInt(localStorage.getItem('clientradar_smtp_port') || '587')
+          })
+        });
+        const res = await resp.json();
+        if (resp.ok) {
+          alert(`✅ Success: ${res.message}`);
+          btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Dispatched!</span>`;
+        } else {
+          alert(`⚠️ SMTP Error: ${res.detail || 'Failed to dispatch email'}`);
+          btn.innerHTML = origHtml;
+        }
+      } catch (err) {
+        alert(`Connection error: ${err.message}`);
+        btn.innerHTML = origHtml;
+      } finally {
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    function copyToClipboard(text, btn) {
+      if (!text || text === 'N/A') return;
+      navigator.clipboard.writeText(text);
+      if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = `<i data-lucide="check" class="w-2.5 h-2.5 text-emerald-500"></i>`;
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          lucide.createIcons();
+        }, 1500);
+      }
+    }
+
+    function copyAllEmails() {
+      const emails = allLeads.map(l => l.email).filter(e => e && e !== 'N/A');
+      if (emails.length === 0) return alert('No emails found in current results.');
+      navigator.clipboard.writeText(emails.join(', '));
+      alert(`Copied ${emails.length} emails to clipboard!`);
+    }
+
+    function formatDomain(url) {
+      try {
+        const u = new URL(url);
+        return u.hostname.replace('www.', '');
+      } catch {
+        return 'Website';
+      }
+    }
+
+    function downloadCSV() {
+      if (allLeads.length === 0) return alert('No leads to download');
+      try {
+        const headers = ["Business Name", "Category", "Phone", "Email", "Website", "Instagram", "Facebook", "LinkedIn", "Opportunity Tag", "Pitch Angle", "Rating", "Reviews Count", "Address", "City / State", "Google Maps URL"];
+        const rows = allLeads.map(l => {
+          const s = l.socials || {};
+          return [
+            `"${(l.name||'').replace(/"/g, '""')}"`,
+            `"${(l.category||'').replace(/"/g, '""')}"`,
+            `"${(l.phone||'').replace(/"/g, '""')}"`,
+            `"${(l.email||'').replace(/"/g, '""')}"`,
+            `"${(l.website||'').replace(/"/g, '""')}"`,
+            `"${(s.instagram||'N/A').replace(/"/g, '""')}"`,
+            `"${(s.facebook||'N/A').replace(/"/g, '""')}"`,
+            `"${(s.linkedin||'N/A').replace(/"/g, '""')}"`,
+            `"${(l.opportunity_tag||'').replace(/"/g, '""')}"`,
+            `"${(l.pitch_angle||'').replace(/"/g, '""')}"`,
+            l.rating || 0,
+            l.reviews_count || 0,
+            `"${(l.address||'').replace(/"/g, '""')}"`,
+            `"${(l.city_state||'').replace(/"/g, '""')}"`,
+            `"${(l.maps_url||'').replace(/"/g, '""')}"`
+          ].join(',');
+        });
+        const csvContent = "data:text/csv;charset=utf-8,\ufeff" + [headers.join(','), ...rows].join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `clientradar_leads_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        window.location.href = '/api/export/csv';
+      }
+    }
+
+    function downloadColdEmailCSV() {
+      if (allLeads.length === 0) return alert('No leads to download');
+      try {
+        const filtered = allLeads.filter(l => l.email && l.email !== 'N/A');
+        if (filtered.length === 0) return alert('No leads with verified email found in current results.');
+        const headers = ["Company Name", "Email", "Phone", "Website", "Personalized Pitch", "City"];
+        const rows = filtered.map(l => [
+          `"${(l.name||'').replace(/"/g, '""')}"`,
+          `"${(l.email||'').replace(/"/g, '""')}"`,
+          `"${(l.phone||'').replace(/"/g, '""')}"`,
+          `"${(l.website||'').replace(/"/g, '""')}"`,
+          `"${(l.pitch_angle||'').replace(/"/g, '""')}"`,
+          `"${(l.city_state||'').replace(/"/g, '""')}"`
+        ].join(','));
+        const csvContent = "data:text/csv;charset=utf-8,\ufeff" + [headers.join(','), ...rows].join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `clientradar_cold_email_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        window.location.href = '/api/export/cold-email-csv';
+      }
+    }
+
+    // Startup: Check if user has configured sender details
+    window.addEventListener('DOMContentLoaded', () => {
+      const isConfigured = localStorage.getItem('clientradar_configured');
+      if (!isConfigured) {
+        // First load: Prompt user nicely on startup!
+        setTimeout(() => {
+          openSenderModal(true);
+        }, 400);
+      } else {
+        // ALREADY CONFIGURED: Do NOT prompt again on reload!
+        updateHeaderSenderBadge();
+      }
+    });
+  </script>
+</body>
+</html>

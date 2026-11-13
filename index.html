@@ -1944,7 +1944,9 @@
       if (emptyRow) emptyRow.remove();
 
       const leadIdx = allLeads.length - 1;
-      const isLocked = leadIdx >= 2; // Lead 0 & 1 are FREE. Lead 2+ are locked.
+      // Freemium Paywall Feature Flag (kept in code, set to true later when ready to monetize)
+      const FREEMIUM_LOCK_ENABLED = false;
+      const isLocked = FREEMIUM_LOCK_ENABLED && (leadIdx >= 2);
 
       // --- 1. Desktop Table Row ---
       const tr = document.createElement('tr');
@@ -1958,7 +1960,7 @@
             <div>
               <div class="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5">
                 ${escapeHtml(l.name)}
-                ${isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>'}
+                ${FREEMIUM_LOCK_ENABLED ? (isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>') : ''}
               </div>
               <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(l.category)} • ${escapeHtml(l.address)}</div>
             </div>
@@ -2065,7 +2067,7 @@
                   ${leadIdx + 1}
                 </span>
                 <span class="font-bold text-sm text-zinc-900 dark:text-white">${escapeHtml(l.name)}</span>
-                ${isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>'}
+                ${FREEMIUM_LOCK_ENABLED ? (isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>') : ''}
               </div>
               <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">${escapeHtml(l.category)} • ${escapeHtml(l.address)}</div>
             </div>

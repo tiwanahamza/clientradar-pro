@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,6 +113,14 @@
         border-radius: 1rem !important;
         max-height: 90vh !important;
       }
+    }
+
+  
+    /* Strict High-Level Modal Stacking - Never allow sticky headers or banners to bleed through */
+    #senderConfigModal, #proposalModal, #unlockModal {
+      z-index: 9999 !important;
+      position: fixed !important;
+      inset: 0 !important;
     }
 
   </style>
@@ -410,7 +418,111 @@
   </main>
 
   <!-- Instant Proposal & Cold Outreach Modal -->
-  <div id="proposalModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+  
+  <!-- Freemium Unlock / Paywall Modal -->
+  <div id="unlockModal" class="hidden fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md items-center justify-center p-3 sm:p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-start justify-between bg-zinc-50 dark:bg-[#151519]">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wide">
+            <i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i> Free Trial Limit (2 Free Leads)
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-zinc-900 dark:text-white mt-1.5">
+            Unlock Unlimited Leads & Direct Phone Numbers
+          </h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            You've previewed 2 free verified leads with full phone numbers and outreach pitches. Choose how you'd like to get full access:
+          </p>
+        </div>
+        <button onclick="closeUnlockModal()" class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 hover:text-zinc-800 dark:hover:text-white flex items-center justify-center transition cursor-pointer shrink-0 ml-2">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Offer Options Grid -->
+      <div class="p-4 sm:p-5 space-y-3.5 max-h-[70vh] overflow-y-auto custom-scroll">
+        
+        <!-- Option 1: Gumroad Lifetime Software ($19) -->
+        <div class="relative p-4 rounded-xl border-2 border-emerald-500/70 bg-emerald-500/[0.03] dark:bg-emerald-500/[0.05] space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500 text-zinc-950 uppercase tracking-wider">
+              ⭐ Best Value • Lifetime License
+            </span>
+            <div class="text-right">
+              <span class="text-xs text-zinc-400 line-through mr-1">$49</span>
+              <span class="text-base font-black text-emerald-600 dark:text-emerald-400">$19</span>
+            </div>
+          </div>
+          <div>
+            <div class="font-bold text-sm text-zinc-900 dark:text-white">ClientRadar Engine & Source Code</div>
+            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+              Run unlimited scans on your own computer with zero API fees. Never pay monthly SaaS subscriptions again.
+            </p>
+          </div>
+          <ul class="text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1.5 font-medium">
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 shrink-0"></i>
+              <span>Extract unlimited phone numbers, emails & social profiles</span>
+            </li>
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 shrink-0"></i>
+              <span>Automated 1-click Gmail cold email outreach engine included</span>
+            </li>
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500 shrink-0"></i>
+              <span>Export unlimited CSVs directly to Apollo, Instantly & Excel</span>
+            </li>
+          </ul>
+          <a href="https://tiwanahamza.gumroad.com/l/pbrqin" target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95">
+            <span>Get Lifetime Source Code ($19)</span> &rarr;
+          </a>
+        </div>
+
+        <!-- Option 2: Fiverr Done-For-You Leads ($15) -->
+        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+              🤝 Done-For-You Service
+            </span>
+            <span class="text-base font-black text-zinc-900 dark:text-white">$15</span>
+          </div>
+          <div>
+            <div class="font-bold text-sm text-zinc-900 dark:text-white">Custom Lead List & Data Enrichment</div>
+            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+              Don't have time to run scrapers? Let our verified lead generation team extract 500-1,000 custom decision makers for you.
+            </p>
+          </div>
+          <ul class="text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1.5 font-medium">
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i>
+              <span>Cleaned, deduplicated list for your exact city & niche</span>
+            </li>
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i>
+              <span>24-hour fast turnaround delivery on Fiverr</span>
+            </li>
+          </ul>
+          <a href="http://www.fiverr.com/s/Q2rGo13" target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95">
+            <span>Order Lead List on Fiverr ($15)</span> &rarr;
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-[#151519] flex items-center justify-between text-xs">
+        <span class="text-zinc-400 text-[11px]">Instant download • 100% money-back guarantee</span>
+        <button onclick="closeUnlockModal()" class="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold cursor-pointer">
+          Continue with Free Preview
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="proposalModal" class="hidden fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div id="proposalModalContent" class="bg-white dark:bg-[#121215] border-t sm:border border-zinc-200 dark:border-zinc-800 rounded-t-2xl sm:rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col">
       
       <!-- Modal Header -->
@@ -484,7 +596,7 @@
   </div>
 
   <!-- Sender Profile & Gmail SMTP Configuration Modal -->
-  <div id="senderConfigModal" class="fixed inset-0 z-60 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div id="senderConfigModal" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
       <!-- Modal Header -->
       <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-[#151519]">
@@ -642,12 +754,12 @@
 
     function initTheme() {
       const saved = localStorage.getItem('clientradar_theme');
-      if (saved === 'light') {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.remove('dark');
-      } else {
+      if (saved === 'dark') {
         document.documentElement.classList.add('dark');
         document.body.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
       }
       updateThemeUI();
     }
@@ -1399,30 +1511,88 @@
       };
     }
 
+    
+    // --- Freemium Paywall / Trial Helpers ---
+    function openUnlockModal(feature = 'leads') {
+      const m = document.getElementById('unlockModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        lucide.createIcons();
+      }
+    }
+
+    function closeUnlockModal() {
+      const m = document.getElementById('unlockModal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+    }
+
+    function maskPhone(phone) {
+      if (!phone || phone === 'N/A') return 'N/A';
+      // Show first 6 chars, mask the rest with bullet locks
+      const visible = phone.slice(0, 6);
+      return `${visible}•••••`;
+    }
+
+    function maskEmail(email) {
+      if (!email || email === 'N/A') return '—';
+      const parts = email.split('@');
+      if (parts.length === 2) {
+        const namePart = parts[0];
+        const visible = namePart.length > 2 ? namePart.slice(0, 2) : namePart.slice(0, 1);
+        return `${visible}••••@${parts[1]}`;
+      }
+      return '••••••••@domain.com';
+    }
+
+
     function appendLeadToTable(l) {
       const tbody = document.getElementById('leadsBody');
       const emptyRow = document.getElementById('emptyRow');
       if (emptyRow) emptyRow.remove();
 
       const leadIdx = allLeads.length - 1;
+      const isLocked = leadIdx >= 2; // Lead 0 & 1 are FREE. Lead 2+ are locked.
 
-      // 1. Desktop Table Row
+      // --- 1. Desktop Table Row ---
       const tr = document.createElement('tr');
       tr.className = 'hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40 transition lead-row-fade';
       tr.innerHTML = `
         <td class="px-4 py-3">
-          <div class="font-semibold text-zinc-900 dark:text-white">${escapeHtml(l.name)}</div>
-          <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(l.category)}</div>
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full ${isLocked ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold'} text-[10px] flex items-center justify-center shrink-0">
+              ${leadIdx + 1}
+            </span>
+            <div>
+              <div class="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                ${escapeHtml(l.name)}
+                ${isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>'}
+              </div>
+              <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(l.category)} • ${escapeHtml(l.address)}</div>
+            </div>
+          </div>
         </td>
+
+        <!-- Phone -->
         <td class="px-4 py-3 whitespace-nowrap">
-          ${l.phone !== 'N/A' 
-            ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
-                 <a href="tel:${l.phone}" class="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold">${escapeHtml(l.phone)}</a>
-                 <button onclick="copyToClipboard('${escapeHtml(l.phone)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5" title="Copy"><i data-lucide="copy" class="w-3 h-3"></i></button>
-               </div>` 
-            : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">N/A</span>`
+          ${isLocked 
+            ? `<button onclick="openUnlockModal('phone')" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 transition cursor-pointer select-none bg-zinc-100 dark:bg-zinc-800/60 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700" title="Click to unlock full phone number">
+                 <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+                 <span>${escapeHtml(maskPhone(l.phone))}</span>
+               </button>`
+            : (l.phone !== 'N/A' 
+                ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
+                     <a href="tel:${l.phone}" class="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold">${escapeHtml(l.phone)}</a>
+                     <button onclick="copyToClipboard('${escapeHtml(l.phone)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5" title="Copy"><i data-lucide="copy" class="w-3 h-3"></i></button>
+                   </div>`
+                : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">N/A</span>`)
           }
         </td>
+
+        <!-- Website -->
         <td class="px-4 py-3 text-xs whitespace-nowrap">
           ${l.website !== 'N/A' 
             ? `<a href="${l.website}" target="_blank" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:underline flex items-center gap-1 truncate max-w-[130px]">
@@ -1431,15 +1601,24 @@
             : `<span class="text-amber-600 dark:text-amber-400 text-[11px] font-medium">None</span>`
           }
         </td>
+
+        <!-- Email -->
         <td class="px-4 py-3 text-xs whitespace-nowrap">
-          ${l.email !== 'N/A' 
-            ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
-                 <a href="mailto:${l.email}" class="text-zinc-800 dark:text-zinc-200 hover:underline truncate max-w-[150px] font-medium">${escapeHtml(l.email)}</a>
-                 <button onclick="copyToClipboard('${escapeHtml(l.email)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5" title="Copy"><i data-lucide="copy" class="w-3 h-3"></i></button>
-               </div>` 
-            : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">—</span>`
+          ${isLocked
+            ? `<button onclick="openUnlockModal('email')" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 transition cursor-pointer select-none bg-zinc-100 dark:bg-zinc-800/60 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700" title="Click to unlock verified email">
+                 <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+                 <span>${escapeHtml(maskEmail(l.email))}</span>
+               </button>`
+            : (l.email !== 'N/A' 
+                ? `<div class="flex items-center gap-1.5 font-mono text-[11px]">
+                     <a href="mailto:${l.email}" class="text-zinc-800 dark:text-zinc-200 hover:underline truncate max-w-[150px] font-medium">${escapeHtml(l.email)}</a>
+                     <button onclick="copyToClipboard('${escapeHtml(l.email)}', this)" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5" title="Copy"><i data-lucide="copy" class="w-3 h-3"></i></button>
+                   </div>`
+                : `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">—</span>`)
           }
         </td>
+
+        <!-- Socials -->
         <td class="px-4 py-3">
           <div class="flex items-center gap-1.5">
             ${l.socials && l.socials.instagram ? `<a href="${l.socials.instagram}" target="_blank" class="p-1 rounded bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-pink-600 dark:text-pink-400" title="Instagram"><i data-lucide="instagram" class="w-3.5 h-3.5"></i></a>` : ''}
@@ -1448,20 +1627,31 @@
             ${(!l.socials || Object.keys(l.socials).length === 0) ? `<span class="text-zinc-400 dark:text-zinc-600 text-[11px]">—</span>` : ''}
           </div>
         </td>
+
+        <!-- Rating -->
         <td class="px-4 py-3 whitespace-nowrap text-zinc-700 dark:text-zinc-300">
           <span class="text-amber-500 font-semibold">★ ${l.rating || 'N/A'}</span>
           <span class="text-[10px] text-zinc-400 ml-0.5">(${l.reviews_count || 0})</span>
         </td>
+
+        <!-- Opportunity Badge -->
         <td class="px-4 py-3">
           <span class="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded ${getBadgeClass(l.opportunity_color)}" title="${escapeHtml(l.pitch_angle || '')}">
             ${escapeHtml(l.opportunity_tag)}
           </span>
         </td>
+
+        <!-- Actions -->
         <td class="px-4 py-3 text-right whitespace-nowrap">
           <div class="inline-flex items-center gap-1.5">
-            <button onclick="openProposalModal(${leadIdx})" class="text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="Generate Proposal & Pitch">
-              <i data-lucide="sparkles" class="w-3 h-3 text-emerald-500"></i> Pitch
-            </button>
+            ${isLocked 
+              ? `<button onclick="openUnlockModal('pitch')" class="text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="Unlock Lead & Pitch">
+                   <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i> Unlock
+                 </button>`
+              : `<button onclick="openProposalModal(${leadIdx})" class="text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="Generate Proposal & Pitch">
+                   <i data-lucide="sparkles" class="w-3 h-3 text-emerald-500"></i> Pitch
+                 </button>`
+            }
             <a href="${l.maps_url}" target="_blank" class="text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer">
               Map <i data-lucide="arrow-up-right" class="w-2.5 h-2.5"></i>
             </a>
@@ -1470,7 +1660,7 @@
       `;
       tbody.appendChild(tr);
 
-      // 2. Mobile Cards Container
+      // --- 2. Mobile Responsive Card View ---
       const mobileContainer = document.getElementById('leadsCardsMobile');
       if (mobileContainer) {
         const emptyRowMobile = document.getElementById('emptyRowMobile');
@@ -1481,8 +1671,14 @@
         card.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div>
-              <div class="font-bold text-sm text-zinc-900 dark:text-white">${escapeHtml(l.name)}</div>
-              <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(l.category)} • ${escapeHtml(l.address)}</div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full ${isLocked ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold'} text-[9px] flex items-center justify-center shrink-0">
+                  ${leadIdx + 1}
+                </span>
+                <span class="font-bold text-sm text-zinc-900 dark:text-white">${escapeHtml(l.name)}</span>
+                ${isLocked ? '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded">PRO</span>' : '<span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded">FREE</span>'}
+              </div>
+              <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">${escapeHtml(l.category)} • ${escapeHtml(l.address)}</div>
             </div>
             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${getBadgeClass(l.opportunity_color)}">
               ${escapeHtml(l.opportunity_tag)}
@@ -1494,15 +1690,20 @@
             <span class="text-zinc-400 font-normal text-[11px]">(${l.reviews_count || 0} reviews)</span>
           </div>
 
+          <!-- Quick Contacts on Mobile -->
           <div class="flex flex-wrap items-center gap-2 text-xs pt-1">
-            ${l.phone !== 'N/A' 
-              ? `<a href="tel:${l.phone}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-semibold text-xs active:scale-95 transition">
-                   <i data-lucide="phone" class="w-3.5 h-3.5"></i> <span>${escapeHtml(l.phone)}</span>
-                 </a>
-                 <button onclick="copyToClipboard('${escapeHtml(l.phone)}', this)" class="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-md border border-zinc-200 dark:border-zinc-800 cursor-pointer" title="Copy Phone">
-                   <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            ${isLocked 
+              ? `<button onclick="openUnlockModal('phone')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 font-semibold text-xs active:scale-95 transition cursor-pointer">
+                   <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-500"></i> <span>${escapeHtml(maskPhone(l.phone))}</span>
                  </button>`
-              : '<span class="text-xs text-zinc-400 px-2.5 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg">No Phone</span>'
+              : (l.phone !== 'N/A' 
+                  ? `<a href="tel:${l.phone}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-semibold text-xs active:scale-95 transition">
+                       <i data-lucide="phone" class="w-3.5 h-3.5"></i> <span>${escapeHtml(l.phone)}</span>
+                     </a>
+                     <button onclick="copyToClipboard('${escapeHtml(l.phone)}', this)" class="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-md border border-zinc-200 dark:border-zinc-800 cursor-pointer" title="Copy Phone">
+                       <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                     </button>`
+                  : '<span class="text-xs text-zinc-400 px-2.5 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg">No Phone</span>')
             }
             ${l.website !== 'N/A' 
               ? `<a href="${l.website}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs hover:underline">
@@ -1510,21 +1711,32 @@
                  </a>` 
               : ''
             }
-            ${l.email !== 'N/A' 
-              ? `<a href="mailto:${l.email}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs hover:underline">
-                   <i data-lucide="mail" class="w-3.5 h-3.5"></i> <span>Email</span>
-                 </a>` 
-              : ''
+            ${isLocked 
+              ? `<button onclick="openUnlockModal('email')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs cursor-pointer">
+                   <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-500"></i> <span>Email</span>
+                 </button>`
+              : (l.email !== 'N/A' 
+                  ? `<a href="mailto:${l.email}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs hover:underline">
+                       <i data-lucide="mail" class="w-3.5 h-3.5"></i> <span>Email</span>
+                     </a>` 
+                  : '')
             }
             <a href="${l.maps_url}" target="_blank" class="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-md border border-zinc-200 dark:border-zinc-800 ml-auto" title="Google Maps">
               <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
             </a>
           </div>
 
-          <button onclick="openProposalModal(${leadIdx})" class="w-full py-2.5 px-3 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 transition cursor-pointer">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 dark:text-amber-500"></i>
-            <span>Generate Cold Pitch & Outreach</span>
-          </button>
+          <!-- Bottom Button -->
+          ${isLocked 
+            ? `<button onclick="openUnlockModal('lead_card')" class="w-full py-2.5 px-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 transition cursor-pointer">
+                 <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-500"></i>
+                 <span>Unlock Lead Details & AI Outreach</span>
+               </button>`
+            : `<button onclick="openProposalModal(${leadIdx})" class="w-full py-2.5 px-3 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 transition cursor-pointer">
+                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 dark:text-amber-500"></i>
+                 <span>Generate Cold Pitch & Outreach</span>
+               </button>`
+          }
         `;
         mobileContainer.appendChild(card);
       }

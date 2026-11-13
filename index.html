@@ -741,6 +741,16 @@
         .replace(/'/g, '&#039;');
     }
 
+    // Live Cloudflare / Remote Engine Endpoint for deployed instances
+    const LIVE_REMOTE_BACKEND = 'https://handheld-watching-operating-eye.trycloudflare.com';
+
+    function getApiBaseUrl() {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return '';
+      }
+      return LIVE_REMOTE_BACKEND;
+    }
+
     // Bulletproof Theme Management (Light / Dark)
     function updateThemeUI() {
       const isDark = document.documentElement.classList.contains('dark');
@@ -1629,92 +1639,6 @@
       };
     }
 
-    // --- Dynamic Hyper-Realistic Business Name Generator for ANY Niche & City ---
-    function generateBusinessName(niche, region, index) {
-      const cleanNiche = (niche || 'Business').trim();
-      const capitalizedNiche = cleanNiche.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-      const sector = region.sectors[index % region.sectors.length].split(' ')[0];
-      const city = region.city;
-
-      // 1. Specialized Dental / Medical Names
-      if (cleanNiche.toLowerCase().includes('dent') || cleanNiche.toLowerCase().includes('orthodont')) {
-        const dentalNames = [
-          `Dr. Tariq Dental Surgery & Aesthetic Centre`,
-          `${city} Dental Care & Orthodontics`,
-          `Smile Craft Dental Studio`,
-          `Margalla Dental Surgery & Implants`,
-          `Capital Aesthetic Dentistry & Smile Hub`,
-          `Ali Dental Arts & Implant Surgery`,
-          `Advanced Dental Specialists`,
-          `Cosmetic Smile Studio & Dental Lounge`,
-          `Executive Dental Associates`,
-          `${sector} Dental Care Practice`
-        ];
-        return dentalNames[index % dentalNames.length];
-      }
-
-      // 2. Specialized Roofing / Construction
-      if (cleanNiche.toLowerCase().includes('roof') || cleanNiche.toLowerCase().includes('construct')) {
-        const roofNames = [
-          `${city} Roofers & Waterproofing Solutions`,
-          `Apex Roofing Systems & Repair`,
-          `Master Roof Sealers ${city}`,
-          `National Insulation & Roof Care`,
-          `Prime Construction & Roofing`,
-          `Horizon Roof Masters PK`,
-          `${sector} Roofing & Restoration`
-        ];
-        return roofNames[index % roofNames.length];
-      }
-
-      // 3. Specialized Plumbing
-      if (cleanNiche.toLowerCase().includes('plumb')) {
-        const plumbNames = [
-          `${city} Expert Plumbers & Sanitary`,
-          `FastFix Plumbing Solutions`,
-          `Capital Emergency Sanitary & Gas`,
-          `Ali Professional Plumbers & Leak Detection`,
-          `Prime Flow Plumbing Services`,
-          `${sector} Express Plumbers`
-        ];
-        return plumbNames[index % plumbNames.length];
-      }
-
-      // 4. Dynamic Generic Generator for ANY Other Niche (Car Rental, Gyms, Salons, Real Estate, Bakeries, Tech, etc.)
-      const prefixes = [
-        `${city}`,
-        `Al-Rehman`,
-        `Apex`,
-        `Prime`,
-        `Capital`,
-        `Elite`,
-        `${sector}`,
-        `Master`,
-        `National`,
-        `Horizon`,
-        `Royal`,
-        `Premier`
-      ];
-
-      const suffixes = [
-        `Care & Solutions`,
-        `Services & Hub`,
-        `Specialists`,
-        `Group`,
-        `Studio`,
-        `Associates`,
-        `Enterprises`,
-        `Experts`,
-        `Network`,
-        `Partners`
-      ];
-
-      const p = prefixes[index % prefixes.length];
-      const s = suffixes[index % suffixes.length];
-
-      return `${p} ${capitalizedNiche} ${s}`;
-    }
-
     // --- Cloud Simulation Stream Runner ---
         function runCloudPreviewSimulation(niche, location, limit, reqPhone, reqWeb, reqEmail, btn, progressBar, percentText, counterText, statusContainer) {
       const region = getRegionProfile(location);
@@ -1794,45 +1718,28 @@
               status: 'Verified'
             };
           } else {
-            // 2. Dynamic Local Business Generation for ANY Other Niche
-            const baseName = generateBusinessName(niche, region, index);
-            const sector = region.sectors[index % region.sectors.length];
-            const address = `${sector}, ${region.city}`;
-            const phone = region.phoneGenerator(index);
-
-            // Notice: For unverified businesses, DO NOT invent fake domains that 404!
-            // Flag as "Needs Website" — this is honest and high-value!
-            const hasWeb = (index % 4 === 0) && reqWeb;
-            const website = 'N/A'; // Safe: no broken links!
-            const email = 'N/A';
-
-            // Social search links that NEVER 404
-            const socials = {
-              linkedin: `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(baseName)}`,
-              facebook: `https://www.facebook.com/public/${encodeURIComponent(baseName)}`,
-              instagram: `https://www.instagram.com/explore/tags/${encodeURIComponent(niche.replace(/\s+/g, ''))}/`
-            };
-
-            const rating = (4.2 + ((index * 13 + 5) % 8) / 10).toFixed(1);
-            const reviews = 12 + ((index * 29 + 7) % 180);
-
-            lead = {
-              name: baseName,
-              category: niche.charAt(0).toUpperCase() + niche.slice(1),
-              phone: phone,
-              website: website,
-              email: email,
-              socials: socials,
-              opportunity_tag: 'Needs Website',
-              opportunity_color: 'amber',
-              pitch_angle: `High Value: No official website detected for ${baseName}. Pitch complete modern website & online client booking system.`,
-              rating: parseFloat(rating),
-              reviews_count: reviews,
-              address: address,
-              city_state: `${region.city}, ${region.country}`,
-              maps_url: `https://www.google.com/maps/search/${encodeURIComponent(baseName + ' ' + address)}`,
-              status: 'Verified'
-            };
+            // Clean stop: NEVER fabricate non-existent businesses!
+            clearInterval(interval);
+            const total = allLeads.length;
+            document.getElementById('currentStatusText').innerText = total > 0 
+              ? `Completed verified extraction (${total} businesses).`
+              : `Live Google Maps engine is required for unlisted niche '${niche}'. Run local engine or download source code.`;
+            progressBar.style.width = '100%';
+            percentText.innerText = '100%';
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="search" class="w-3.5 h-3.5"></i><span>Search Businesses</span>`;
+            lucide.createIcons();
+            if (total === 0) {
+              const tbody = document.getElementById('leadsBody');
+              tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-zinc-500">
+                <i data-lucide="map-pin-off" class="w-8 h-8 mx-auto mb-2 text-zinc-400"></i>
+                <div class="text-sm font-bold text-zinc-800 dark:text-zinc-200">Live Scraper Engine Offline</div>
+                <div class="text-xs text-zinc-500 mt-1 max-w-md mx-auto">Run <code class="bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded font-mono text-[11px]">python app.py</code> locally or connect the ClientRadar Desktop Engine to scrape live Google Maps records in real time.</div>
+              </td></tr>`;
+              lucide.createIcons();
+            }
+            logToConsole(`ℹ️ Only 100% verified real businesses are displayed. Zero fabricated records.`);
+            return;
           }
 
           allLeads.push(lead);
@@ -1912,7 +1819,9 @@
         require_email: reqEmail
       });
 
-      activeEventSource = new EventSource(`/api/scrape/stream?${params.toString()}`);
+      const streamEndpoint = `${getApiBaseUrl()}/api/scrape/stream?${params.toString()}`;
+      logToConsole(`Connecting to engine: ${streamEndpoint}`);
+      activeEventSource = new EventSource(streamEndpoint);
 
       activeEventSource.onmessage = function(e) {
         try {

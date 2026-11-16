@@ -2459,7 +2459,7 @@ You: "${painPoint} I actually put together a free 2-minute audit for ${l.name}. 
       lucide.createIcons();
 
       try {
-        const resp = await fetch('/api/email/send', {
+        const resp = await fetch(`${getApiBaseUrl()}/api/email/send`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

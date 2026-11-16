@@ -1944,8 +1944,8 @@
       if (emptyRow) emptyRow.remove();
 
       const leadIdx = allLeads.length - 1;
-      // Freemium Paywall Feature Flag (kept in code, set to true later when ready to monetize)
-      const FREEMIUM_LOCK_ENABLED = false;
+      // Freemium Paywall Feature Flag (Active: Lead 0 & 1 Free, Lead 2+ Locked to maximize Gumroad conversions)
+      const FREEMIUM_LOCK_ENABLED = true;
       const isLocked = FREEMIUM_LOCK_ENABLED && (leadIdx >= 2);
 
       // --- 1. Desktop Table Row ---

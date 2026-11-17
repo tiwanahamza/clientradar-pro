@@ -205,11 +205,7 @@
         </button>
 
         <!-- Theme Toggle Button (Light / Dark) -->
-        <!-- Auditor Pro 1-Click Launch Button -->
-        <button onclick="openQuickAuditPrompt()" id="btnHeaderAudit" class="text-xs bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/80 px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-semibold cursor-pointer" title="Generate 1-Click Client Audit PDF for any URL">
-          <i data-lucide="file-check" class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"></i>
-          <span class="hidden sm:inline">Auditor Pro PDF</span>
-        </button>
+        
 
         <button onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme" title="Toggle Light / Dark mode" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition shadow-sm cursor-pointer">
           <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
@@ -425,6 +421,120 @@
   </main>
 
   <!-- Instant Proposal & Cold Outreach Modal -->
+  
+  <!-- Freemium Unlock / Paywall Modal -->
+  <div id="unlockModal" class="hidden fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md items-center justify-center p-3 sm:p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-start justify-between bg-zinc-50 dark:bg-[#151519]">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wide">
+            <i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i> Free Trial Limit (2 Free Leads)
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-zinc-900 dark:text-white mt-1.5">
+            Unlock Unlimited Leads & Direct Phone Numbers
+          </h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            You've previewed 2 free verified leads with full phone numbers and outreach pitches. Choose how you'd like to get full access:
+          </p>
+        </div>
+        <button onclick="closeUnlockModal()" class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 hover:text-zinc-800 dark:hover:text-white flex items-center justify-center transition cursor-pointer shrink-0 ml-2">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Offer Options Grid -->
+      <div class="p-4 sm:p-5 space-y-3.5 max-h-[70vh] overflow-y-auto custom-scroll">
+        
+        <!-- Option 1: 🇵🇰 Pakistan Local Transfer (Rs. 3,500 / JazzCash, EasyPaisa, Bank) -->
+        <div class="relative p-4 rounded-xl border-2 border-emerald-500/70 bg-emerald-500/[0.04] dark:bg-emerald-500/[0.06] space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-600 text-white uppercase tracking-wider">
+              🇵🇰 Pakistan Special • JazzCash / EasyPaisa
+            </span>
+            <div class="text-right">
+              <span class="text-xs text-zinc-400 line-through mr-1">Rs. 8,000</span>
+              <span class="text-base font-black text-emerald-600 dark:text-emerald-400">Rs. 3,500</span>
+            </div>
+          </div>
+          <div>
+            <div class="font-bold text-sm text-zinc-900 dark:text-white">Instant Local Payment (Direct WhatsApp Activation)</div>
+            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+              Pakistani buyers can pay directly via JazzCash, EasyPaisa, or Raast Bank Transfer and get instant tool access & license code via WhatsApp.
+            </p>
+          </div>
+          <a id="btnLocalPakPay" href="https://api.whatsapp.com/send?text=Assalam-o-Alaikum%20Hamza%2C%20I%20want%20to%20unlock%20ClientRadar%20Pro%20lifetime%20access%20via%20JazzCash%2FEasyPaisa%20(Rs.%203%2C500)." target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95 cursor-pointer">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Pay Rs. 3,500 via JazzCash / EasyPaisa</span> &rarr;
+          </a>
+        </div>
+
+        <!-- Option 2: Gumroad Lifetime Software ($29 USD - International) -->
+        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+              💳 International (Credit Card / PayPal)
+            </span>
+            <div class="text-right">
+              <span class="text-xs text-zinc-400 line-through mr-1">$49</span>
+              <span class="text-base font-black text-zinc-900 dark:text-white">$29</span>
+            </div>
+          </div>
+          <div>
+            <div class="font-bold text-sm text-zinc-900 dark:text-white">ClientRadar Engine & Source Code</div>
+            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+              Instant automated download on Gumroad. Run unlimited scans with zero API fees.
+            </p>
+          </div>
+          <a href="https://tiwanahamza.gumroad.com/l/pbrqin" target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95">
+            <span>Pay $29 on Gumroad</span> &rarr;
+          </a>
+        </div>
+
+        <!-- Option 2: Fiverr Done-For-You Leads ($15) -->
+        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+              🤝 Done-For-You Service
+            </span>
+            <span class="text-base font-black text-zinc-900 dark:text-white">$15</span>
+          </div>
+          <div>
+            <div class="font-bold text-sm text-zinc-900 dark:text-white">Custom Lead List & Data Enrichment</div>
+            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+              Don't have time to run scrapers? Let our verified lead generation team extract 500-1,000 custom decision makers for you.
+            </p>
+          </div>
+          <ul class="text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1.5 font-medium">
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i>
+              <span>Cleaned, deduplicated list for your exact city & niche</span>
+            </li>
+            <li class="flex items-center gap-1.5">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i>
+              <span>24-hour fast turnaround delivery on Fiverr</span>
+            </li>
+          </ul>
+          <a href="http://www.fiverr.com/s/Q2rGo13" target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95">
+            <span>Order Lead List on Fiverr ($15)</span> &rarr;
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-[#151519] flex items-center justify-between text-xs">
+        <span class="text-zinc-400 text-[11px]">Instant download • 100% money-back guarantee</span>
+        <button onclick="closeUnlockModal()" class="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold cursor-pointer">
+          Continue with Free Preview
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- Instant Proposal & Cold Outreach Modal -->
   
   <!-- Freemium Unlock / Paywall Modal -->
   <div id="unlockModal" class="hidden fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md items-center justify-center p-3 sm:p-4">
@@ -2165,13 +2275,7 @@
         <!-- Actions -->
         <td class="px-4 py-3 text-right whitespace-nowrap">
           <div class="inline-flex items-center gap-1.5">
-            ${l.website !== 'N/A' && l.website.startsWith('http')
-              ? `<button onclick="openAuditModal('${escapeHtml(l.website)}', '${escapeHtml(l.name)}')" class="text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="1-Click Client Audit PDF">
-                   <i data-lucide="file-text" class="w-3 h-3 text-blue-500"></i> Audit
-                 </button>`
-              : ''
-            }
-            ${isLocked 
+            ${isLocked
               ? `<button onclick="openUnlockModal('pitch')" class="text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/80 px-2 py-1 rounded inline-flex items-center gap-1 transition cursor-pointer" title="Unlock Lead & Pitch">
                    <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i> Unlock
                  </button>`
@@ -2735,6 +2839,14 @@ You: "${painPoint} I actually put together a free 2-minute audit for ${l.name}. 
       }
     }
 
+    // Startup: Check if user has configured sender details
+    window.addEventListener('DOMContentLoaded', () => {
+      const isConfigured = localStorage.getItem('clientradar_configured');
+      if (isConfigured) {
+        updateHeaderSenderBadge();
+      }
+    });
+  
     // Startup: Check if user has configured sender details
     window.addEventListener('DOMContentLoaded', () => {
       const isConfigured = localStorage.getItem('clientradar_configured');

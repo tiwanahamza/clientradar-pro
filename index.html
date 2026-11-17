@@ -5,179 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ClientRadar — Local Business & Lead Discovery</title>
   <script src="https://cdn.tailwindcss.com">
-    // ==========================================
-    // AUDITOR PRO — 1-CLICK CLIENT AUDIT ENGINE
-    // ==========================================
-    let currentAuditUrl = '';
-    let currentAuditData = null;
-
-    function openQuickAuditPrompt() {
-      const url = prompt("Enter any website URL to generate an executive audit report (e.g. brand.com or https://store.com):", "https://");
-      if (url && url.trim() && url.trim() !== "https://" && url.trim().length > 3) {
-        let clean = url.trim();
-        if (!clean.startsWith('http://') && !clean.startsWith('https://')) clean = 'https://' + clean;
-        const domain = clean.replace(/^https?:\/\//, '').split('/')[0];
-        openAuditModal(clean, domain);
-      }
-    }
-
-    async function openAuditModal(url, bizName) {
-      if (!url || url === 'N/A') return alert('No active website available for this business.');
-      currentAuditUrl = url;
-      
-      const modal = document.getElementById('auditModal');
-      modal.classList.remove('hidden');
-      document.getElementById('auditBizName').innerText = bizName || 'Target Business';
-      document.getElementById('auditDomainUrl').innerText = url;
-      
-      document.getElementById('auditLoadingState').classList.remove('hidden');
-      document.getElementById('auditResultState').classList.add('hidden');
-      lucide.createIcons();
-
-      try {
-        const apiBase = getApiBaseUrl();
-        const endpoint = `${apiBase}/api/audit/analyze?url=${encodeURIComponent(url)}`;
-        const resp = await fetch(endpoint);
-        if (!resp.ok) throw new Error('Backend audit service unavailable');
-        const data = await resp.json();
-        currentAuditData = data;
-        renderAuditResult(data);
-      } catch (err) {
-        console.warn('Backend audit offline or network error, generating client diagnostic:', err);
-        const fallbackData = generateClientFallbackAudit(url, bizName);
-        currentAuditData = fallbackData;
-        renderAuditResult(fallbackData);
-      }
-    }
-
-    function closeAuditModal() {
-      const modal = document.getElementById('auditModal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function renderAuditResult(data) {
-      document.getElementById('auditLoadingState').classList.add('hidden');
-      document.getElementById('auditResultState').classList.remove('hidden');
-
-      const scoreEl = document.getElementById('auditScoreVal');
-      scoreEl.innerText = data.score;
-      const gradeEl = document.getElementById('auditGradeBadge');
-      
-      if (data.score >= 80) {
-        scoreEl.className = 'text-3xl font-extrabold text-emerald-500';
-        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 ml-2';
-        gradeEl.innerText = 'EXCELLENT';
-      } else if (data.score >= 60) {
-        scoreEl.className = 'text-3xl font-extrabold text-amber-500';
-        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 ml-2';
-        gradeEl.innerText = 'GOOD';
-      } else {
-        scoreEl.className = 'text-3xl font-extrabold text-rose-500';
-        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20 ml-2';
-        gradeEl.innerText = 'NEEDS ATTENTION';
-      }
-
-      document.getElementById('auditLoadTime').innerText = `${data.load_time_sec || 2.1}s`;
-      document.getElementById('auditSsl').innerText = data.is_https ? 'Active (HTTPS)' : 'Insecure (No SSL)';
-      document.getElementById('auditSsl').className = data.is_https ? 'text-emerald-500 font-bold' : 'text-rose-500 font-bold';
-      document.getElementById('auditPlatform').innerText = (data.tech_stack && data.tech_stack.length > 0) ? data.tech_stack.join(', ') : 'Custom Web';
-
-      // Issues list
-      const issuesList = document.getElementById('auditIssuesList');
-      issuesList.innerHTML = '';
-      if (!data.issues || data.issues.length === 0) {
-        issuesList.innerHTML = '<div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✅ No critical technical bottlenecks detected during scan.</div>';
-      } else {
-        data.issues.forEach(iss => {
-          const isCrit = iss.severity === 'critical' || iss.severity === 'high';
-          const col = isCrit ? 'rose' : 'amber';
-          issuesList.innerHTML += `
-            <div class="p-2.5 rounded-lg bg-${col}-500/10 border border-${col}-500/20 space-y-0.5">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-xs text-${col}-600 dark:text-${col}-400">${escapeHtml(iss.title)}</span>
-                <span class="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-${col}-500/20 text-${col}-600 dark:text-${col}-300 rounded">${iss.severity}</span>
-              </div>
-              <p class="text-[11px] text-zinc-600 dark:text-zinc-400">${escapeHtml(iss.desc)}</p>
-            </div>
-          `;
-        });
-      }
-
-      // Pixels list
-      const pixelsList = document.getElementById('auditPixelsList');
-      pixelsList.innerHTML = '';
-      const tracking = data.tracking || { "Meta Pixel (Facebook Ads)": false, "Google Analytics (GA4)": true, "TikTok Pixel": false, "Clarity (Microsoft)": false };
-      Object.keys(tracking).forEach(tool => {
-        const present = tracking[tool];
-        pixelsList.innerHTML += `
-          <div class="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
-            <span class="text-zinc-700 dark:text-zinc-300 font-medium">${tool}</span>
-            ${present 
-              ? '<span class="text-[10px] font-bold text-emerald-500 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3 h-3"></i> Active</span>'
-              : '<span class="text-[10px] font-bold text-rose-500 flex items-center gap-1"><i data-lucide="x-circle" class="w-3 h-3"></i> Missing</span>'
-            }
-          </div>
-        `;
-      });
-
-      // Pitch hook
-      document.getElementById('auditPitchText').value = data.pitch_hook || `Hi team, I ran an automated diagnostic on ${data.domain} and noticed an overall digital health score of ${data.score}/100. Key areas for rapid conversion growth were identified in the executive audit.`;
-      lucide.createIcons();
-    }
-
-    function downloadAuditPdf() {
-      if (!currentAuditUrl) return;
-      const agencyName = localStorage.getItem('clientradar_agency_name') || 'ClientRadar Growth Partner';
-      const apiBase = getApiBaseUrl();
-      const pdfUrl = `${apiBase}/api/audit/pdf?url=${encodeURIComponent(currentAuditUrl)}&agency=${encodeURIComponent(agencyName)}`;
-      window.open(pdfUrl, '_blank');
-    }
-
-    function copyAuditPitch() {
-      const text = document.getElementById('auditPitchText').value;
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById('btnCopyAuditPitch');
-        btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-500"></i> <span class="text-emerald-500">Copied!</span>`;
-        lucide.createIcons();
-        setTimeout(() => {
-          btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> <span>Copy Pitch</span>`;
-          lucide.createIcons();
-        }, 2000);
-      });
-    }
-
-    function generateClientFallbackAudit(url, bizName) {
-      const domain = url.replace(/^https?:\/\//, '').split('/')[0];
-      const isHttps = url.startsWith('https://');
-      const issues = [];
-      let score = 78;
-
-      if (!isHttps) {
-        score -= 20;
-        issues.push({ severity: 'critical', title: 'Insecure Website (No HTTPS / SSL)', desc: "Browsers show 'Not Secure' warning, hurting visitor trust." });
-      }
-      issues.push({ severity: 'high', title: 'Missing Meta Pixel (Facebook & Instagram Ads)', desc: 'Cannot run retargeting ads or track sales from Instagram & Facebook.' });
-      issues.push({ severity: 'medium', title: 'Missing OpenGraph Social Image', desc: 'When links are shared on WhatsApp or LinkedIn, no preview card is generated.' });
-
-      return {
-        url: url,
-        domain: domain,
-        score: score,
-        is_https: isHttps,
-        load_time_sec: 1.9,
-        tech_stack: ['Modern Web Stack'],
-        tracking: {
-          'Meta Pixel (Facebook Ads)': false,
-          'Google Analytics (GA4)': true,
-          'Google Tag Manager': false,
-          'TikTok Pixel': false
-        },
-        issues: issues,
-        pitch_hook: `Hi ${bizName || domain} team, I ran an automated diagnostic on ${domain} and noticed an overall digital health score of ${score}/100. Missing Meta retargeting pixels and mobile sharing cards were detected. We compiled a 3-page executive audit showing how to fix these to boost customer acquisition.`
-      };
-    }
-
-</script>
+    </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -2881,6 +2709,178 @@ You: "${painPoint} I actually put together a free 2-minute audit for ${l.name}. 
         updateHeaderSenderBadge();
       }
     });
+  
+    // ==========================================
+    // AUDITOR PRO — 1-CLICK CLIENT AUDIT ENGINE
+    // ==========================================
+    let currentAuditUrl = '';
+    let currentAuditData = null;
+
+    function openQuickAuditPrompt() {
+      const url = prompt("Enter any website URL to generate an executive audit report (e.g. brand.com or https://store.com):", "https://");
+      if (url && url.trim() && url.trim() !== "https://" && url.trim().length > 3) {
+        let clean = url.trim();
+        if (!clean.startsWith('http://') && !clean.startsWith('https://')) clean = 'https://' + clean;
+        const domain = clean.replace(/^https?:\/\//, '').split('/')[0];
+        openAuditModal(clean, domain);
+      }
+    }
+
+    async function openAuditModal(url, bizName) {
+      if (!url || url === 'N/A') return alert('No active website available for this business.');
+      currentAuditUrl = url;
+      
+      const modal = document.getElementById('auditModal');
+      modal.classList.remove('hidden');
+      document.getElementById('auditBizName').innerText = bizName || 'Target Business';
+      document.getElementById('auditDomainUrl').innerText = url;
+      
+      document.getElementById('auditLoadingState').classList.remove('hidden');
+      document.getElementById('auditResultState').classList.add('hidden');
+      lucide.createIcons();
+
+      try {
+        const apiBase = getApiBaseUrl();
+        const endpoint = `${apiBase}/api/audit/analyze?url=${encodeURIComponent(url)}`;
+        const resp = await fetch(endpoint);
+        if (!resp.ok) throw new Error('Backend audit service unavailable');
+        const data = await resp.json();
+        currentAuditData = data;
+        renderAuditResult(data);
+      } catch (err) {
+        console.warn('Backend audit offline or network error, generating client diagnostic:', err);
+        const fallbackData = generateClientFallbackAudit(url, bizName);
+        currentAuditData = fallbackData;
+        renderAuditResult(fallbackData);
+      }
+    }
+
+    function closeAuditModal() {
+      const modal = document.getElementById('auditModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderAuditResult(data) {
+      document.getElementById('auditLoadingState').classList.add('hidden');
+      document.getElementById('auditResultState').classList.remove('hidden');
+
+      const scoreEl = document.getElementById('auditScoreVal');
+      scoreEl.innerText = data.score;
+      const gradeEl = document.getElementById('auditGradeBadge');
+      
+      if (data.score >= 80) {
+        scoreEl.className = 'text-3xl font-extrabold text-emerald-500';
+        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 ml-2';
+        gradeEl.innerText = 'EXCELLENT';
+      } else if (data.score >= 60) {
+        scoreEl.className = 'text-3xl font-extrabold text-amber-500';
+        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 ml-2';
+        gradeEl.innerText = 'GOOD';
+      } else {
+        scoreEl.className = 'text-3xl font-extrabold text-rose-500';
+        gradeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20 ml-2';
+        gradeEl.innerText = 'NEEDS ATTENTION';
+      }
+
+      document.getElementById('auditLoadTime').innerText = `${data.load_time_sec || 2.1}s`;
+      document.getElementById('auditSsl').innerText = data.is_https ? 'Active (HTTPS)' : 'Insecure (No SSL)';
+      document.getElementById('auditSsl').className = data.is_https ? 'text-emerald-500 font-bold' : 'text-rose-500 font-bold';
+      document.getElementById('auditPlatform').innerText = (data.tech_stack && data.tech_stack.length > 0) ? data.tech_stack.join(', ') : 'Custom Web';
+
+      // Issues list
+      const issuesList = document.getElementById('auditIssuesList');
+      issuesList.innerHTML = '';
+      if (!data.issues || data.issues.length === 0) {
+        issuesList.innerHTML = '<div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">✅ No critical technical bottlenecks detected during scan.</div>';
+      } else {
+        data.issues.forEach(iss => {
+          const isCrit = iss.severity === 'critical' || iss.severity === 'high';
+          const col = isCrit ? 'rose' : 'amber';
+          issuesList.innerHTML += `
+            <div class="p-2.5 rounded-lg bg-${col}-500/10 border border-${col}-500/20 space-y-0.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-${col}-600 dark:text-${col}-400">${escapeHtml(iss.title)}</span>
+                <span class="text-[9px] uppercase font-mono font-bold px-1.5 py-0.2 bg-${col}-500/20 text-${col}-600 dark:text-${col}-300 rounded">${iss.severity}</span>
+              </div>
+              <p class="text-[11px] text-zinc-600 dark:text-zinc-400">${escapeHtml(iss.desc)}</p>
+            </div>
+          `;
+        });
+      }
+
+      // Pixels list
+      const pixelsList = document.getElementById('auditPixelsList');
+      pixelsList.innerHTML = '';
+      const tracking = data.tracking || { "Meta Pixel (Facebook Ads)": false, "Google Analytics (GA4)": true, "TikTok Pixel": false, "Clarity (Microsoft)": false };
+      Object.keys(tracking).forEach(tool => {
+        const present = tracking[tool];
+        pixelsList.innerHTML += `
+          <div class="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
+            <span class="text-zinc-700 dark:text-zinc-300 font-medium">${tool}</span>
+            ${present 
+              ? '<span class="text-[10px] font-bold text-emerald-500 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3 h-3"></i> Active</span>'
+              : '<span class="text-[10px] font-bold text-rose-500 flex items-center gap-1"><i data-lucide="x-circle" class="w-3 h-3"></i> Missing</span>'
+            }
+          </div>
+        `;
+      });
+
+      // Pitch hook
+      document.getElementById('auditPitchText').value = data.pitch_hook || `Hi team, I ran an automated diagnostic on ${data.domain} and noticed an overall digital health score of ${data.score}/100. Key areas for rapid conversion growth were identified in the executive audit.`;
+      lucide.createIcons();
+    }
+
+    function downloadAuditPdf() {
+      if (!currentAuditUrl) return;
+      const agencyName = localStorage.getItem('clientradar_agency_name') || 'ClientRadar Growth Partner';
+      const apiBase = getApiBaseUrl();
+      const pdfUrl = `${apiBase}/api/audit/pdf?url=${encodeURIComponent(currentAuditUrl)}&agency=${encodeURIComponent(agencyName)}`;
+      window.open(pdfUrl, '_blank');
+    }
+
+    function copyAuditPitch() {
+      const text = document.getElementById('auditPitchText').value;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btnCopyAuditPitch');
+        btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-500"></i> <span class="text-emerald-500">Copied!</span>`;
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> <span>Copy Pitch</span>`;
+          lucide.createIcons();
+        }, 2000);
+      });
+    }
+
+    function generateClientFallbackAudit(url, bizName) {
+      const domain = url.replace(/^https?:\/\//, '').split('/')[0];
+      const isHttps = url.startsWith('https://');
+      const issues = [];
+      let score = 78;
+
+      if (!isHttps) {
+        score -= 20;
+        issues.push({ severity: 'critical', title: 'Insecure Website (No HTTPS / SSL)', desc: "Browsers show 'Not Secure' warning, hurting visitor trust." });
+      }
+      issues.push({ severity: 'high', title: 'Missing Meta Pixel (Facebook & Instagram Ads)', desc: 'Cannot run retargeting ads or track sales from Instagram & Facebook.' });
+      issues.push({ severity: 'medium', title: 'Missing OpenGraph Social Image', desc: 'When links are shared on WhatsApp or LinkedIn, no preview card is generated.' });
+
+      return {
+        url: url,
+        domain: domain,
+        score: score,
+        is_https: isHttps,
+        load_time_sec: 1.9,
+        tech_stack: ['Modern Web Stack'],
+        tracking: {
+          'Meta Pixel (Facebook Ads)': false,
+          'Google Analytics (GA4)': true,
+          'Google Tag Manager': false,
+          'TikTok Pixel': false
+        },
+        issues: issues,
+        pitch_hook: `Hi ${bizName || domain} team, I ran an automated diagnostic on ${domain} and noticed an overall digital health score of ${score}/100. Missing Meta retargeting pixels and mobile sharing cards were detected. We compiled a 3-page executive audit showing how to fix these to boost customer acquisition.`
+      };
+    }
   </script>
 </body>
 </html>

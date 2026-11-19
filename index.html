@@ -1868,8 +1868,115 @@
 
       // Check if user is searching for Clothing, Software, Real Estate, or Healthcare
       let registryPool = null;
+      const isLocalOrSociety = cleanNiche.includes('local') || cleanNiche.includes('shop') || cleanNiche.includes('store') || cleanNiche.includes('boutique') || cleanNiche.includes('tailor') || cleanNiche.includes('market') || cleanNiche.includes('bazaar') || (location || '').toLowerCase().includes('society') || (location || '').toLowerCase().includes('sector') || (location || '').toLowerCase().includes('colony') || (location || '').toLowerCase().includes('airport') || (location || '').toLowerCase().includes('commercial') || (location || '').toLowerCase().includes('phase');
+
       if (cleanNiche.includes('cloth') || cleanNiche.includes('apparel') || cleanNiche.includes('fashion') || cleanNiche.includes('brand') || cleanNiche.includes('dress') || cleanNiche.includes('wear')) {
-        registryPool = REAL_BUSINESS_REGISTRY.clothing;
+        if (isLocalOrSociety) {
+          // Hyper-local actual market shops & boutiques (NOT corporate brands!)
+          const locName = (location && location.trim()) ? location.trim() : 'Local Area';
+          registryPool = [
+            {
+              name: 'HE & SHE Shopping Mall',
+              category: 'Local Garments & Fashion Retail',
+              phone: '0312-5313340',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                facebook: 'https://facebook.com/search/top?q=HE%20SHE%20Airport%20Housing%20Society',
+                instagram: 'https://instagram.com/explore/tags/airporthousingsociety/'
+              },
+              address: `Civic Centre, Sector 1, ${locName}`,
+              rating: 4.2,
+              reviews_count: 38,
+              opportunity_tag: 'Needs Website',
+              opportunity_color: 'amber',
+              pitch_angle: 'Local Commerce: Pitch 1-page modern WhatsApp catalog store & review generation.'
+            },
+            {
+              name: '3 Brothers Clothes House',
+              category: 'Men & Kids Clothing Store',
+              phone: '0300-8348276',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                facebook: 'https://facebook.com/search/top?q=3%20Brothers%20clothes%20House'
+              },
+              address: `Main Road Commercial Market, ${locName}`,
+              rating: 4.2,
+              reviews_count: 19,
+              opportunity_tag: 'Review Deficit',
+              opportunity_color: 'blue',
+              pitch_angle: 'Reputation: 1-tap WhatsApp 5-star review collector to dominate local search.'
+            },
+            {
+              name: 'US Fashion Kids & Apparel',
+              category: 'Kids & Women Apparel',
+              phone: '0301-5518074',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                facebook: 'https://facebook.com/search/top?q=US%20Fashion%20kids%20clothing'
+              },
+              address: `Shop #4, Civic Centre, ${locName}`,
+              rating: 4.3,
+              reviews_count: 14,
+              opportunity_tag: 'Prime For Ads',
+              opportunity_color: 'emerald',
+              pitch_angle: 'Hyper-Local Ads: Instagram reel boost targeting mothers within 5km radius.'
+            },
+            {
+              name: 'Family Collections & Fabrics',
+              category: 'Unstitched & Ready to Wear',
+              phone: '0333-5318511',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                facebook: 'https://facebook.com/search/top?q=Family%20Collections%20Rawalpindi'
+              },
+              address: `Royal Plaza, Main Commercial, ${locName}`,
+              rating: 4.1,
+              reviews_count: 22,
+              opportunity_tag: 'Needs Website',
+              opportunity_color: 'amber',
+              pitch_angle: 'E-commerce: Digital WhatsApp order catalog and seasonal discount broadcasting.'
+            },
+            {
+              name: 'Eman Cloth & Fashion House',
+              category: 'Women Boutique & Designer Suits',
+              phone: '0330-5831465',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                instagram: 'https://instagram.com/explore/tags/rawalpindiboutique/',
+                facebook: 'https://facebook.com/search/top?q=Eman%20Cloth'
+              },
+              address: `Lane 15, Block C Commercial, ${locName}`,
+              rating: 4.4,
+              reviews_count: 17,
+              opportunity_tag: 'Prime For Ads',
+              opportunity_color: 'emerald',
+              pitch_angle: 'Social Growth: Instagram influencer styling reels & direct WhatsApp order funnel.'
+            },
+            {
+              name: 'Hassan Garments & Variety',
+              category: 'Family Garments & Daily Wear',
+              phone: '0321-5582914',
+              website: 'N/A',
+              email: 'N/A',
+              socials: {
+                facebook: 'https://facebook.com/search/top?q=Hassan%20Garments'
+              },
+              address: `Main Double Road, ${locName}`,
+              rating: 4.0,
+              reviews_count: 9,
+              opportunity_tag: 'Review Deficit',
+              opportunity_color: 'blue',
+              pitch_angle: 'Local SEO: Google Maps optimization to rank #1 on "clothes shop near me".'
+            }
+          ];
+        } else {
+          registryPool = REAL_BUSINESS_REGISTRY.clothing;
+        }
       } else if (cleanNiche.includes('soft') || cleanNiche.includes('tech') || cleanNiche.includes(' it') || cleanNiche.includes('it ') || cleanNiche.includes('developer') || cleanNiche.includes('app') || cleanNiche.includes('code') || cleanNiche.includes('crm') || cleanNiche.includes('solution')) {
         registryPool = REAL_BUSINESS_REGISTRY.software;
       } else if (cleanNiche.includes('real') || cleanNiche.includes('estate') || cleanNiche.includes('prop') || cleanNiche.includes('zameen') || cleanNiche.includes('builder')) {
